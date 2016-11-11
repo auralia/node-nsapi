@@ -1,0 +1,40 @@
+{
+  "name": "nsapi",
+  "version": "0.1.0",
+  "description": "Provides access to the NationStates API",
+  "keywords": [
+    "NationStates",
+    "API"
+  ],
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Auralia",
+    "email": "railana-ns@outlook.com"
+  },
+  "files": [
+    "lib",
+    "CHANGES.md",
+    "LICENSE.md",
+    "NOTICE.md",
+    "npm-shrinkwrap.json",
+    "package.json",
+    "README.md"
+  ],
+  "main": "./lib/main.js",
+  "typings": "./lib/main",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/auralia/node-nsapi.git"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.2.0",
+    "gulp-typescript": "^3.0.2",
+    "merge2": "^1.0.2",
+    "typescript": "^2.0.6"
+  },
+  "dependencies": {
+    "@types/node": "^6.0.46",
+    "xml2js": "^0.4.17"
+  }
+}
