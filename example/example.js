@@ -73,19 +73,22 @@ function example2() {
 }
 
 // The following example uses private shards to retrieve the notices associated
-// with a nation from the last 24 hours and print them to the console.
+// with a nation from the last 24 hours and print them to the console, along
+// with the PIN required for future private shard requests.
 function example3() {
+    let auth = {
+        password: "<your password>",
+        updatePin: true
+    };
     return api.nationRequest("<your nation>", ["notices"],
                              {
                                  "from": String(Math.floor(Date.now() / 1000)
                                                 - (60 * 60 * 24))
                              },
-                             {
-                                 password: "<your password>",
-                                 updatePin: true
-                             })
+                             auth)
               .then(function(data) {
                   console.log(data["notices"]);
+                  console.log("PIN: " + auth.pin);
               });
 }
 
