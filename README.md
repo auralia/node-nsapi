@@ -1,5 +1,7 @@
 # nsapi #
 
+[![npm version](https://badge.fury.io/js/nsapi.svg)](https://badge.fury.io/js/nsapi)
+
 nsapi is a free and open source library that allows Node.js and web 
 applications to easily access the NationStates API without worrying about 
 making HTTP requests, decoding XML or rate limiting.
@@ -25,7 +27,7 @@ The following is a simple example that retrieves a nation's full name and prints
 it to the console.
 
 ```js
-var nsapi = require("../lib/api.js");
+var nsapi = require("nsapi");
 
 // Create main API object
 var api = new nsapi.Api("Example user agent");
