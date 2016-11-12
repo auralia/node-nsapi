@@ -47,7 +47,7 @@ const xmlParser = new xml2js.Parser(
 /**
  * The current version of node-nsapi.
  */
-export const VERSION = "0.1.0";
+export const VERSION = "0.1.1";
 
 /**
  * The API version specified in API requests.
