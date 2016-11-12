@@ -20,8 +20,8 @@
     "package.json",
     "README.md"
   ],
-  "main": "./lib/main.js",
-  "typings": "./lib/main",
+  "main": "./lib/api.js",
+  "typings": "./lib/api",
   "repository": {
     "type": "git",
     "url": "git://github.com/auralia/node-nsapi.git"
