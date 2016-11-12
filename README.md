@@ -30,21 +30,18 @@ var nsapi = require("../lib/api.js");
 // Create main API object
 var api = new nsapi.Api("Example user agent");
 
-function simpleExample(callback) {
+// The following is a simple example that retrieves a nation's full name and
+// prints it to the console.
+function simpleExample() {
     // Retrieve "fullname" shard from the nation API for nation "Auralia"
-    api.nationRequest("Auralia", ["fullname"], function(err, data) {
-        // Throw error if one occurred
-        if (err) {
-            throw err;
-        }
-
-        // Print the nation's full name
-        console.log(data.fullname);
-        callback();
-    });
+    return api.nationRequest("Auralia", ["fullname"])
+              .then(function(data) {
+                  // Print the nation's full name
+                  console.log(data["fullname"]);
+              });
 }
 
-simpleExample(function() {
+simpleExample().then(function() {
     api.cleanup();
 });
 ```

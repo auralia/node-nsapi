@@ -241,13 +241,12 @@ export class Api {
      * @param nation The name of the nation to request data for.
      * @param shards An array of nation API shards. No shards will be specified
      *               if left undefined.
-     * @param callback A callback function providing data from the API.
+     *
+     * @return A promise providing data from the API.
      */
-    public nationRequest(nation: string, shards: string[] = [],
-                         callback: (err?: any, data?: any) => void): void
+    public nationRequest(nation: string, shards: string[] = []): Promise<any>
     {
-        this.xmlRequest("nation=" + encodeURIComponent(nation), shards,
-                        callback);
+        return this.xmlRequest("nation=" + encodeURIComponent(nation), shards);
     }
 
     /**
@@ -256,13 +255,12 @@ export class Api {
      * @param region The name of the region to request data for.
      * @param shards An array of region API shards. No shards will be specified
      *               if left undefined.
-     * @param callback A callback function providing data from the API.
+     *
+     * @return A promise providing data from the API.
      */
-    public regionRequest(region: string, shards: string[] = [],
-                         callback: (err?: any, data?: any) => void): void
+    public regionRequest(region: string, shards: string[] = []): Promise<any>
     {
-        this.xmlRequest("region=" + encodeURIComponent(region), shards,
-                        callback);
+        return this.xmlRequest("region=" + encodeURIComponent(region), shards);
     }
 
     /**
@@ -270,12 +268,12 @@ export class Api {
      *
      * @param shards An array of world API shards. No shards will be specified
      *               if left undefined.
-     * @param callback A callback function providing data from the API.
+     *
+     * @return A promise providing data from the API.
      */
-    public worldRequest(shards: string[] = [],
-                        callback: (err?: any, data?: any) => void): void
+    public worldRequest(shards: string[] = []): Promise<any>
     {
-        this.xmlRequest("", shards, callback);
+        return this.xmlRequest("", shards);
     }
 
     /**
@@ -284,13 +282,13 @@ export class Api {
      * @param council The council of the World Assembly to request data for.
      * @param shards An array of World Assembly API shards. No shards will be
      *               specified if left undefined.
-     * @param callback A callback function providing data from the API.
+     *
+     * @return A promise providing data from the API.
      */
     public worldAssemblyRequest(council: WorldAssemblyCouncil,
-                                shards: string[] = [],
-                                callback: (err?: any, data?: any) => void): void
+                                shards: string[] = []): Promise<any>
     {
-        this.xmlRequest("wa=" + council, shards, callback);
+        return this.xmlRequest("wa=" + council, shards);
     }
 
     /**
@@ -302,11 +300,11 @@ export class Api {
      * @param recipient The name of the recipient.
      * @param type The type of the telegram as given by TelegramType,
      *             used for rate limit purposes.
-     * @param callback A callback function providing confirmation from the API.
+     *
+     * @return A promise providing confirmation from the telegram API.
      */
     public telegramRequest(clientKey: string, tgId: string, tgKey: string,
-                           recipient: string, type: TelegramType,
-                           callback: (err?: any) => void): void
+                           recipient: string, type: TelegramType): Promise<void>
     {
         let params = "a=sendTG";
         params += "&client=" + encodeURIComponent(clientKey);
@@ -314,19 +312,16 @@ export class Api {
         params += "&key=" + encodeURIComponent(tgKey);
         params += "&to=" + encodeURIComponent(recipient);
 
-        this.apiRequest(this.apiPath(params), type, (err, data) => {
-            if (err) {
-                callback(err);
-            }
-            if (typeof data === "string"
-                && data.trim().toLowerCase() === "queued")
-            {
-                callback(undefined);
-            } else {
-                callback(new Error("telegram API response did not consist of" +
-                                   " the string 'queued'"));
-            }
-        });
+        return this.apiRequest(this.apiPath(params), type)
+                   .then((data: string) => {
+                       if (!(typeof data === "string"
+                           && data.trim().toLowerCase() === "queued"))
+                       {
+                           throw new Error("telegram API response did not"
+                                           + " consist of the string"
+                                           + " 'queued'");
+                       }
+                   });
     }
 
     /**
@@ -337,15 +332,12 @@ export class Api {
      * @param checksum The checksum to perform authentication with.
      * @param token Site-specific token. No token will be specified if this
      *              value is left undefined.
-     * @param callback A callback function providing confirmation from the API.
-     *                 The boolean argument will be true if authenticated,
-     *                 false if not authenticated, or undefined if an error
-     *                 occurred.
+     *
+     * @return A promise returning true if authenticated or false if not
+     *         authenticated.
      */
     public authenticateRequest(nation: string, checksum: string,
-                               token: string | undefined,
-                               callback: (err?: Error,
-                                          authenticated?: boolean) => void)
+                               token: string | undefined): Promise<boolean>
     {
         let params = "a=verify";
         params += "&nation=" + encodeURIComponent(nation);
@@ -354,26 +346,29 @@ export class Api {
             params += "&token=" + encodeURIComponent(token);
         }
 
-        this.apiRequest(this.apiPath(params), null, (err, data) => {
-            if (err) {
-                callback(err);
-            }
-            if (typeof data === "string" && data.trim() === "1") {
-                callback(undefined, true);
-            } else if (typeof data === "string" && data.trim() === "0") {
-                callback(undefined, false);
-            } else {
-                callback(new Error("authentication API response did not" +
-                                   " consist of the string '1' or '0'"));
-            }
-        });
+        return this.apiRequest(this.apiPath(params), null)
+                   .then((data: string) => {
+                       if (typeof data === "string"
+                           && data.trim() === "1")
+                       {
+                           return true;
+                       } else if (typeof data === "string"
+                                  && data.trim() === "0")
+                       {
+                           return false;
+                       } else {
+                           throw new Error("authentication API response did"
+                                           + " not consist of the string"
+                                           + " '1' or '0'");
+                       }
+                   });
     }
 
     /**
      * Cleans up the API after use. After this function is called, no further
      * requests can be made using this API instance.
      */
-    public cleanup() {
+    public cleanup(): void {
         clearInterval(this._reqInterval);
     }
 
@@ -382,7 +377,7 @@ export class Api {
      *
      * @param params The parameters to add to the path.
      *
-     * @returns A NationStates API path.
+     * @return A NationStates API path.
      */
     private apiPath(params: string): string {
         let path = "/cgi-bin/api.cgi?";
@@ -392,63 +387,14 @@ export class Api {
     }
 
     /**
-     * Requests data from the NationStates API.
-     *
-     * @param path The NationStates API path to request data from.
-     * @param tg The telegram type, or null if this is not a telegram request.
-     * @param callback A callback function providing data from the API.
-     */
-    private apiRequest(path: string, tg: TelegramType | null,
-                       callback: (err?: Error, data?: string) => void): void
-    {
-        this._reqQueue.push(
-            {
-                tg: tg,
-                func: () => {
-                    http.get(
-                        {
-                            host: "www.nationstates.net",
-                            path: path,
-                            headers: {
-                                "User-Agent": this.userAgent
-                            }
-                        },
-                        res => {
-                            let data = "";
-                            res.on("data", chunk => {
-                                data += chunk;
-                            });
-                            res.on("end", () => {
-                                this._reqInProgress = false;
-                                this._reqLast = Date.now();
-                                if (tg) {
-                                    this._tgReqLast = this._reqLast;
-                                }
-
-                                if (res.statusCode === 200) {
-                                    callback(undefined, data);
-                                } else {
-                                    callback(new Error(
-                                        `API returned HTTP response code`
-                                        + `${res.statusCode}`));
-                                }
-                            });
-                        }
-                    ).on("error", callback);
-                }
-            }
-        );
-    }
-
-    /**
      * Requests XML data from the NationStates API.
      *
      * @param params Additional parameters to add to the NationStates API path.
      * @param shards Shards to add to the NationStates API path.
-     * @param callback A callback function providing data from the API.
+     *
+     * @return A promise returning the data from the NationStates API.
      */
-    private xmlRequest(params: string, shards: string[],
-                       callback: (err?: any, data?: any) => void): void
+    private xmlRequest(params: string, shards: string[]): Promise<any>
     {
         let allParams = "";
         allParams += params + "&";
@@ -456,11 +402,68 @@ export class Api {
             "q=" + shards.map(item => encodeURIComponent(item)).join("+");
         allParams += "&v=" + API_VERSION;
 
-        this.apiRequest(this.apiPath(allParams), null, (err, data) => {
-            if (err) {
-                callback(err);
-            }
-            xmlParser.parseString(data, callback);
+        return this.apiRequest(this.apiPath(allParams), null)
+                   .then((data: string) => {
+                       return new Promise((resolve, reject) => {
+                           xmlParser.parseString(data, (err: any,
+                                                        data: any) => {
+                               if (err) {
+                                   reject(err);
+                               }
+                               resolve(data);
+                           });
+                       });
+                   });
+    }
+
+    /**
+     * Requests data from the NationStates API.
+     *
+     * @param path The NationStates API path to request data from.
+     * @param tg The telegram type, or null if this is not a telegram request.
+     *
+     * @return A promise returning the data from the NationStates API.
+     */
+    private apiRequest(path: string, tg: TelegramType | null): Promise<string>
+    {
+        return new Promise((resolve, reject) => {
+            this._reqQueue.push(
+                {
+                    tg: tg,
+                    func: () => {
+                        http.get(
+                            {
+                                host: "www.nationstates.net",
+                                path: path,
+                                headers: {
+                                    "User-Agent": this.userAgent
+                                }
+                            },
+                            res => {
+                                let data = "";
+                                res.on("data", chunk => {
+                                    data += chunk;
+                                });
+                                res.on("end", () => {
+                                    this._reqInProgress = false;
+                                    this._reqLast = Date.now();
+                                    if (tg) {
+                                        this._tgReqLast = this._reqLast;
+                                    }
+
+                                    if (res.statusCode === 200) {
+                                        resolve(data);
+                                    } else {
+                                        reject(new Error(
+                                            `API returned HTTP response code`
+                                            + `${res.statusCode}`));
+                                    }
+                                });
+                            }
+                        ).on("error", reject);
+                    }
+                }
+            );
         });
     }
 }
