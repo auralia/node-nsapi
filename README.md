@@ -12,7 +12,7 @@ nsapi features the following:
 * rate-limiting to prevent blocked access to the API, including for the 
   telegram API (recruitment and non-recruitment)
 * XML decoding (all data is returned in simple JavaScript data structures)
-* support for version 7 of the NationStates API
+* support for version 9 of the NationStates API
 
 ## Usage ##
 
@@ -35,10 +35,8 @@ var api = new nsapi.Api("Example user agent");
 // The following is a simple example that retrieves a nation's full name and
 // prints it to the console.
 function simpleExample() {
-    // Retrieve "fullname" shard from the nation API for nation "Auralia"
     return api.nationRequest("Auralia", ["fullname"])
               .then(function(data) {
-                  // Print the nation's full name
                   console.log(data["fullname"]);
               });
 }

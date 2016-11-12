@@ -21,11 +21,9 @@ var api = new nsapi.Api("Example user agent");
 
 // The following is a simple example that retrieves a nation's full name and
 // prints it to the console.
-function simpleExample() {
-    // Retrieve "fullname" shard from the nation API for nation "Auralia"
+function example1() {
     return api.nationRequest("Auralia", ["fullname"])
               .then(function(data) {
-                  // Print the nation's full name
                   console.log(data["fullname"]);
               });
 }
@@ -33,7 +31,7 @@ function simpleExample() {
 // The following is a more complex example that retrieves and sorts a list of
 // nations in a region by their influence score, then prints the list to the
 // console.
-function complexExample() {
+function example2() {
     return api.regionRequest("Catholic", ["nations"])
               .then(function(data) {
                   var nations = data["nations"].split(":");
@@ -74,16 +72,40 @@ function complexExample() {
     }
 }
 
+// The following example uses private shards to retrieve the notices associated
+// with a nation from the last 24 hours and print them to the console.
+function example3() {
+    return api.nationRequest("<your nation>", ["notices"],
+                             {
+                                 "from": String(Math.floor(Date.now() / 1000)
+                                                - (60 * 60 * 24))
+                             },
+                             {
+                                 password: "<your password>",
+                                 updatePin: true
+                             })
+              .then(function(data) {
+                  console.log(data["notices"]);
+              });
+}
+
 // The following code executes each example.
 Promise.resolve()
        .then(function() {
-           console.log("Simple example:\n");
-           return simpleExample();
+           console.log("Example 1:\n");
+           return example1();
        })
        .then(function() {
-           console.log("\nComplex example:\n");
-           return complexExample();
+           console.log("\nExample 2:\n");
+           return example2();
+       })
+       .then(function() {
+           console.log("\nExample 3:\n");
+           return example3();
        })
        .then(function() {
            api.cleanup();
+       })
+       .catch(function(err) {
+           console.log(err.stack);
        });

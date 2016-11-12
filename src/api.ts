@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as http from "http";
+import * as https from "https";
 const xml2js = require("xml2js");
 
 const xmlParser = new xml2js.Parser(
@@ -47,12 +47,12 @@ const xmlParser = new xml2js.Parser(
 /**
  * The current version of node-nsapi.
  */
-export const VERSION = "0.1.1";
+export const VERSION = "0.1.2";
 
 /**
  * The API version specified in API requests.
  */
-export const API_VERSION = 7;
+export const API_VERSION = 9;
 
 /**
  * The council of the World Assembly to be specified in World Assembly API
@@ -83,18 +83,47 @@ export enum TelegramType {
     NonRecruitment = 2
 }
 
-export class Api {
-    private _userAgent: string;
-    private _delay: number;
-    private _apiDelayMillis: number;
-    private _recruitTgDelayMillis: number;
-    private _nonRecruitTgDelayMillis: number;
+/**
+ * Information used to authenticate with the NationStates nation API in order
+ * to use private shards.
+ */
+export interface PrivateShardsAuth {
+    /**
+     * The password of the nation specified in the request.
+     */
+    password?: string;
+    /**
+     * The PIN to be used in authentication requests.
+     */
+    pin?: string;
+    /**
+     * Updates the value of pin with the value of the X-PIN header the first
+     * time this object is used in a request.
+     */
+    updatePin?: boolean;
+    /**
+     * The autologin value to be used in authentication requests.
+     */
+    autologin?: string;
+    /**
+     * Updates the value of autologin with the value of the X-Autologin header
+     * the first time this object is used in a request.
+     */
+    updateAutologin?: boolean;
+}
 
-    private _reqQueue: any[];
+export class Api {
+    private readonly _userAgent: string;
+    private readonly _delay: boolean;
+    private readonly _apiDelayMillis: number;
+    private readonly _recruitTgDelayMillis: number;
+    private readonly _nonRecruitTgDelayMillis: number;
+
+    private readonly _reqQueue: any[];
+    private readonly _reqInterval: any;
     private _reqLast: number;
     private _tgReqLast: number;
     private _reqInProgress: boolean;
-    private _reqInterval: any;
 
     /**
      * Initializes a new instance of the Api class.
@@ -122,6 +151,8 @@ export class Api {
         }
         this._userAgent = `node-nsapi ${VERSION} (maintained by Auralia,`
                           + ` currently used by "${userAgent}")`;
+
+        this._delay = delay;
 
         if (typeof apiDelayMillis !== "undefined") {
             if (apiDelayMillis < 600) {
@@ -155,7 +186,7 @@ export class Api {
         this._reqLast = Date.now();
         this._tgReqLast = Date.now();
         this._reqInProgress = false;
-        if (delay) {
+        if (this.delay) {
             this._reqInterval = setInterval(() => {
                 if (this._reqInProgress || this._reqQueue.length === 0) {
                     return;
@@ -163,16 +194,16 @@ export class Api {
 
                 let nextReq = this._reqQueue[0];
                 let exec = false;
-                if (Date.now() - this._reqLast > this._apiDelayMillis) {
+                if (Date.now() - this._reqLast > this.apiDelayMillis) {
                     if (nextReq.tg === TelegramType.Recruitment) {
                         if (Date.now() - this._tgReqLast >
-                            this._recruitTgDelayMillis)
+                            this.recruitTgDelayMillis)
                         {
                             exec = true;
                         }
                     } else if (nextReq.tg === TelegramType.NonRecruitment) {
                         if (Date.now() - this._tgReqLast >
-                            this._nonRecruitTgDelayMillis)
+                            this.nonRecruitTgDelayMillis)
                         {
                             exec = true;
                         }
@@ -241,12 +272,17 @@ export class Api {
      * @param nation The name of the nation to request data for.
      * @param shards An array of nation API shards. No shards will be specified
      *               if left undefined.
+     * @param extraParams Additional shard-specific parameters.
+     * @param auth Authentication information for private shards.
      *
      * @return A promise providing data from the API.
      */
-    public nationRequest(nation: string, shards: string[] = []): Promise<any>
+    public nationRequest(nation: string, shards: string[] = [],
+                         extraParams: {[name: string]: string} = {},
+                         auth?: PrivateShardsAuth): Promise<any>
     {
-        return this.xmlRequest("nation=" + encodeURIComponent(nation), shards);
+        extraParams["nation"] = nation;
+        return this.xmlRequest(shards, extraParams, auth);
     }
 
     /**
@@ -255,12 +291,15 @@ export class Api {
      * @param region The name of the region to request data for.
      * @param shards An array of region API shards. No shards will be specified
      *               if left undefined.
+     * @param extraParams Additional shard-specific parameters.
      *
      * @return A promise providing data from the API.
      */
-    public regionRequest(region: string, shards: string[] = []): Promise<any>
+    public regionRequest(region: string, shards: string[] = [],
+                         extraParams: {[name: string]: string} = {}): Promise<any>
     {
-        return this.xmlRequest("region=" + encodeURIComponent(region), shards);
+        extraParams["region"] = region;
+        return this.xmlRequest(shards, extraParams);
     }
 
     /**
@@ -268,12 +307,14 @@ export class Api {
      *
      * @param shards An array of world API shards. No shards will be specified
      *               if left undefined.
+     * @param extraParams Additional shard-specific parameters.
      *
      * @return A promise providing data from the API.
      */
-    public worldRequest(shards: string[] = []): Promise<any>
+    public worldRequest(shards: string[] = [],
+                        extraParams: {[name: string]: string} = {}): Promise<any>
     {
-        return this.xmlRequest("", shards);
+        return this.xmlRequest(shards, extraParams);
     }
 
     /**
@@ -282,13 +323,16 @@ export class Api {
      * @param council The council of the World Assembly to request data for.
      * @param shards An array of World Assembly API shards. No shards will be
      *               specified if left undefined.
+     * @param extraParams Additional shard-specific parameters.
      *
      * @return A promise providing data from the API.
      */
     public worldAssemblyRequest(council: WorldAssemblyCouncil,
-                                shards: string[] = []): Promise<any>
+                                shards: string[] = [],
+                                extraParams: {[name: string]: string} = {}): Promise<any>
     {
-        return this.xmlRequest("wa=" + council, shards);
+        extraParams["wa"] = String(council);
+        return this.xmlRequest(shards, extraParams);
     }
 
     /**
@@ -303,8 +347,9 @@ export class Api {
      *
      * @return A promise providing confirmation from the telegram API.
      */
-    public telegramRequest(clientKey: string, tgId: string, tgKey: string,
-                           recipient: string, type: TelegramType): Promise<void>
+    public telegramRequest(clientKey: string, tgId: string,
+                           tgKey: string, recipient: string,
+                           type: TelegramType): Promise<void>
     {
         let params = "a=sendTG";
         params += "&client=" + encodeURIComponent(clientKey);
@@ -315,7 +360,7 @@ export class Api {
         return this.apiRequest(this.apiPath(params), type)
                    .then((data: string) => {
                        if (!(typeof data === "string"
-                           && data.trim().toLowerCase() === "queued"))
+                             && data.trim().toLowerCase() === "queued"))
                        {
                            throw new Error("telegram API response did not"
                                            + " consist of the string"
@@ -389,20 +434,28 @@ export class Api {
     /**
      * Requests XML data from the NationStates API.
      *
-     * @param params Additional parameters to add to the NationStates API path.
      * @param shards Shards to add to the NationStates API path.
+     * @param params Additional parameters to add to the NationStates API
+     *               path.
+     * @param auth Authentication information for private shards.
      *
      * @return A promise returning the data from the NationStates API.
      */
-    private xmlRequest(params: string, shards: string[]): Promise<any>
+    private xmlRequest(shards: string[], params: {[name: string]: string},
+                       auth?: PrivateShardsAuth): Promise<any>
     {
         let allParams = "";
-        allParams += params + "&";
-        allParams +=
-            "q=" + shards.map(item => encodeURIComponent(item)).join("+");
-        allParams += "&v=" + API_VERSION;
+        allParams += "q=" + shards.map(item => encodeURIComponent(item))
+                                  .join("+") + "&";
+        for (const param in params) {
+            if (params.hasOwnProperty(param)) {
+                allParams += encodeURIComponent(param) + "="
+                             + encodeURIComponent(params[param]) + "&";
+            }
+        }
+        allParams += "v=" + API_VERSION;
 
-        return this.apiRequest(this.apiPath(allParams), null)
+        return this.apiRequest(this.apiPath(allParams), null, auth)
                    .then((data: string) => {
                        return new Promise((resolve, reject) => {
                            xmlParser.parseString(data, (err: any,
@@ -421,49 +474,75 @@ export class Api {
      *
      * @param path The NationStates API path to request data from.
      * @param tg The telegram type, or null if this is not a telegram request.
+     * @param auth Authentication information for private shards.
      *
      * @return A promise returning the data from the NationStates API.
      */
-    private apiRequest(path: string, tg: TelegramType | null): Promise<string>
+    private apiRequest(path: string, tg: TelegramType | null,
+                       auth?: PrivateShardsAuth): Promise<string>
     {
-        return new Promise((resolve, reject) => {
-            this._reqQueue.push(
-                {
-                    tg: tg,
-                    func: () => {
-                        http.get(
-                            {
-                                host: "www.nationstates.net",
-                                path: path,
-                                headers: {
-                                    "User-Agent": this.userAgent
-                                }
-                            },
-                            res => {
-                                let data = "";
-                                res.on("data", chunk => {
-                                    data += chunk;
-                                });
-                                res.on("end", () => {
-                                    this._reqInProgress = false;
-                                    this._reqLast = Date.now();
-                                    if (tg) {
-                                        this._tgReqLast = this._reqLast;
-                                    }
+        let headers: any = {
+            "User-Agent": this.userAgent
+        };
+        if (auth) {
+            if (auth.pin) {
+                headers["Pin"] = auth.pin;
+            }
+            if (auth.autologin) {
+                headers["Autologin"] = auth.autologin;
+            }
+            if (auth.password) {
+                headers["Password"] = auth.password;
+            }
+        }
 
-                                    if (res.statusCode === 200) {
-                                        resolve(data);
-                                    } else {
-                                        reject(new Error(
-                                            `API returned HTTP response code`
-                                            + `${res.statusCode}`));
-                                    }
-                                });
+        return new Promise((resolve, reject) => {
+            const func = () => {
+                https.get(
+                    {
+                        host: "www.nationstates.net",
+                        path,
+                        headers
+                    },
+                    res => {
+                        let data = "";
+                        res.on("data", chunk => {
+                            data += chunk;
+                        });
+                        res.on("end", () => {
+                            this._reqInProgress = false;
+                            this._reqLast = Date.now();
+                            if (tg) {
+                                this._tgReqLast = this._reqLast;
                             }
-                        ).on("error", reject);
+
+                            if (res.statusCode === 200) {
+                                if (auth) {
+                                    if (auth.updateAutologin
+                                        && res.headers["x-autologin"])
+                                    {
+                                        auth.autologin =
+                                            res.headers["x-autologin"];
+                                    }
+                                    if (auth.updatePin
+                                        && res.headers["x-pin"])
+                                    {
+                                        auth.pin =
+                                            res.headers["x-pin"];
+                                    }
+                                }
+
+                                resolve(data);
+                            } else {
+                                reject(new Error(
+                                    `API returned HTTP response code`
+                                    + ` ${res.statusCode}`));
+                            }
+                        });
                     }
-                }
-            );
+                ).on("error", reject);
+            };
+            this._reqQueue.push({tg, func});
         });
     }
 }
