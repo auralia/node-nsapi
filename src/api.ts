@@ -47,7 +47,7 @@ const xmlParser = new xml2js.Parser(
 /**
  * The current version of node-nsapi.
  */
-export const VERSION = "0.1.2";
+export const VERSION = "0.1.3";
 
 /**
  * The API version specified in API requests.
@@ -112,7 +112,7 @@ export interface PrivateShardsAuth {
     updateAutologin?: boolean;
 }
 
-export class Api {
+export class NationStatesApi {
     private readonly _userAgent: string;
     private readonly _delay: boolean;
     private readonly _apiDelayMillis: number;
@@ -125,6 +125,10 @@ export class Api {
     private _tgReqLast: number;
     private _reqInProgress: boolean;
 
+    private _blockExistingRequests: boolean;
+    private _blockNewRequests: boolean;
+    private _cleanup: boolean;
+
     /**
      * Initializes a new instance of the Api class.
      *
@@ -133,11 +137,11 @@ export class Api {
      *              requests. Defaults to true.
      * @param apiDelayMillis The delay before API requests in milliseconds.
      *                       Defaults to 600.
-     * @param recruitTgDelayMillis The delay before recruitment telegrams in
-     *                             milliseconds. Defaults to 60000.
      * @param nonRecruitTgDelayMillis The delay before non-recruitment
      *                                telegrams in milliseconds. Defaults to
-     *                                180000.
+     *                                60000.
+     * @param recruitTgDelayMillis The delay before recruitment telegrams in
+     *                             milliseconds. Defaults to 180000.
      */
     constructor(userAgent: string,
                 delay: boolean = true,
@@ -188,7 +192,10 @@ export class Api {
         this._reqInProgress = false;
         if (this.delay) {
             this._reqInterval = setInterval(() => {
-                if (this._reqInProgress || this._reqQueue.length === 0) {
+                if (this._reqInProgress
+                    || this._reqQueue.length === 0
+                    || this.blockExistingRequests)
+                {
                     return;
                 }
 
@@ -220,7 +227,9 @@ export class Api {
             }, 0);
         } else {
             this._reqInterval = setInterval(() => {
-                if (this._reqQueue.length === 0) {
+                if (this._reqQueue.length === 0
+                    || this.blockExistingRequests)
+                {
                     return;
                 }
 
@@ -228,6 +237,10 @@ export class Api {
                 nextReq.func();
             }, 0);
         }
+
+        this._blockExistingRequests = false;
+        this._blockNewRequests = false;
+        this._cleanup = false;
     }
 
     /**
@@ -267,6 +280,66 @@ export class Api {
     }
 
     /**
+     * Gets whether or not existing requests in the queue are blocked from being
+     * performed.
+     */
+    get blockExistingRequests() {
+        return this._blockExistingRequests;
+    }
+
+    /**
+     * If set to true, blocks the API from performing any further requests. If
+     * set to false, normal operation will resume.
+     *
+     * @param blockExistingRequests Whether or not existing requests in the
+     *                              queue should be blocked from being
+     *                              performed.
+     */
+    set blockExistingRequests(blockExistingRequests: boolean) {
+        this._blockExistingRequests = blockExistingRequests;
+    }
+
+    /**
+     * Gets whether or not new requests are blocked from being added to the
+     * queue.
+     */
+    get blockNewRequests() {
+        return this._blockNewRequests;
+    }
+
+    /**
+     * If set to true, prevents any new requests from being added to the queue.
+     * If set to false, normal operation will resume.
+     *
+     * @param blockNewRequests Whether or not new requests should be blocked
+     *                         from being added to the queue.
+     */
+    set blockNewRequests(blockNewRequests: boolean) {
+        this._blockNewRequests = blockNewRequests;
+    }
+
+    /**
+     * Cancels all requests in the API queue.
+     */
+    public clearQueue(): void {
+        while (this._reqQueue.length > 0) {
+            this._reqQueue.pop().reject(new Error("API queue cleared"));
+        }
+    }
+
+    /**
+     * Cancels all requests in the API queue and turns off the API scheduler.
+     *
+     * After this function is called, no further requests can be made using
+     * this API instance, including requests currently in the queue.
+     */
+    public cleanup(): void {
+        clearInterval(this._reqInterval);
+        this.clearQueue();
+        this._cleanup = true;
+    }
+
+    /**
      * Requests data from the NationStates nation API.
      *
      * @param nation The name of the nation to request data for.
@@ -281,8 +354,10 @@ export class Api {
                          extraParams: {[name: string]: string} = {},
                          auth?: PrivateShardsAuth): Promise<any>
     {
-        extraParams["nation"] = nation;
-        return this.xmlRequest(shards, extraParams, auth);
+        return Promise.resolve().then(() => {
+            extraParams["nation"] = nation;
+            return this.xmlRequest(shards, extraParams, auth);
+        });
     }
 
     /**
@@ -298,8 +373,10 @@ export class Api {
     public regionRequest(region: string, shards: string[] = [],
                          extraParams: {[name: string]: string} = {}): Promise<any>
     {
-        extraParams["region"] = region;
-        return this.xmlRequest(shards, extraParams);
+        return Promise.resolve().then(() => {
+            extraParams["region"] = region;
+            return this.xmlRequest(shards, extraParams);
+        });
     }
 
     /**
@@ -331,8 +408,10 @@ export class Api {
                                 shards: string[] = [],
                                 extraParams: {[name: string]: string} = {}): Promise<any>
     {
-        extraParams["wa"] = String(council);
-        return this.xmlRequest(shards, extraParams);
+        return Promise.resolve().then(() => {
+            extraParams["wa"] = String(council);
+            return this.xmlRequest(shards, extraParams);
+        });
     }
 
     /**
@@ -351,22 +430,24 @@ export class Api {
                            tgKey: string, recipient: string,
                            type: TelegramType): Promise<void>
     {
-        let params = "a=sendTG";
-        params += "&client=" + encodeURIComponent(clientKey);
-        params += "&tgid=" + encodeURIComponent(tgId);
-        params += "&key=" + encodeURIComponent(tgKey);
-        params += "&to=" + encodeURIComponent(recipient);
+        return Promise.resolve().then(() => {
+            let params = "a=sendTG";
+            params += "&client=" + encodeURIComponent(clientKey);
+            params += "&tgid=" + encodeURIComponent(tgId);
+            params += "&key=" + encodeURIComponent(tgKey);
+            params += "&to=" + encodeURIComponent(recipient);
 
-        return this.apiRequest(this.apiPath(params), type)
-                   .then((data: string) => {
-                       if (!(typeof data === "string"
-                             && data.trim().toLowerCase() === "queued"))
-                       {
-                           throw new Error("telegram API response did not"
-                                           + " consist of the string"
-                                           + " 'queued'");
-                       }
-                   });
+            return this.apiRequest(this.apiPath(params), type)
+                       .then((data: string) => {
+                           if (!(typeof data === "string"
+                                 && data.trim().toLowerCase() === "queued"))
+                           {
+                               throw new Error("telegram API response did not"
+                                               + " consist of the string"
+                                               + " 'queued'");
+                           }
+                       });
+        });
     }
 
     /**
@@ -384,37 +465,31 @@ export class Api {
     public authenticateRequest(nation: string, checksum: string,
                                token: string | undefined): Promise<boolean>
     {
-        let params = "a=verify";
-        params += "&nation=" + encodeURIComponent(nation);
-        params += "&checksum=" + encodeURIComponent(checksum);
-        if (token) {
-            params += "&token=" + encodeURIComponent(token);
-        }
+        return Promise.resolve().then(() => {
+            let params = "a=verify";
+            params += "&nation=" + encodeURIComponent(nation);
+            params += "&checksum=" + encodeURIComponent(checksum);
+            if (token) {
+                params += "&token=" + encodeURIComponent(token);
+            }
 
-        return this.apiRequest(this.apiPath(params), null)
-                   .then((data: string) => {
-                       if (typeof data === "string"
-                           && data.trim() === "1")
-                       {
-                           return true;
-                       } else if (typeof data === "string"
-                                  && data.trim() === "0")
-                       {
-                           return false;
-                       } else {
-                           throw new Error("authentication API response did"
-                                           + " not consist of the string"
-                                           + " '1' or '0'");
-                       }
-                   });
-    }
-
-    /**
-     * Cleans up the API after use. After this function is called, no further
-     * requests can be made using this API instance.
-     */
-    public cleanup(): void {
-        clearInterval(this._reqInterval);
+            return this.apiRequest(this.apiPath(params), null)
+                       .then((data: string) => {
+                           if (typeof data === "string"
+                               && data.trim() === "1")
+                           {
+                               return true;
+                           } else if (typeof data === "string"
+                                      && data.trim() === "0")
+                           {
+                               return false;
+                           } else {
+                               throw new Error("authentication API response did"
+                                               + " not consist of the string"
+                                               + " '1' or '0'");
+                           }
+                       });
+        });
     }
 
     /**
@@ -444,29 +519,31 @@ export class Api {
     private xmlRequest(shards: string[], params: {[name: string]: string},
                        auth?: PrivateShardsAuth): Promise<any>
     {
-        let allParams = "";
-        allParams += "q=" + shards.map(item => encodeURIComponent(item))
-                                  .join("+") + "&";
-        for (const param in params) {
-            if (params.hasOwnProperty(param)) {
-                allParams += encodeURIComponent(param) + "="
-                             + encodeURIComponent(params[param]) + "&";
+        return Promise.resolve().then(() => {
+            let allParams = "";
+            allParams += "q=" + shards.map(item => encodeURIComponent(item))
+                                      .join("+") + "&";
+            for (const param in params) {
+                if (params.hasOwnProperty(param)) {
+                    allParams += encodeURIComponent(param) + "="
+                                 + encodeURIComponent(params[param]) + "&";
+                }
             }
-        }
-        allParams += "v=" + API_VERSION;
+            allParams += "v=" + API_VERSION;
 
-        return this.apiRequest(this.apiPath(allParams), null, auth)
-                   .then((data: string) => {
-                       return new Promise((resolve, reject) => {
-                           xmlParser.parseString(data, (err: any,
-                                                        data: any) => {
-                               if (err) {
-                                   reject(err);
-                               }
-                               resolve(data);
+            return this.apiRequest(this.apiPath(allParams), null, auth)
+                       .then((data: string) => {
+                           return new Promise((resolve, reject) => {
+                               xmlParser.parseString(data, (err: any,
+                                                            data: any) => {
+                                   if (err) {
+                                       reject(err);
+                                   }
+                                   resolve(data);
+                               });
                            });
                        });
-                   });
+        });
     }
 
     /**
@@ -481,22 +558,29 @@ export class Api {
     private apiRequest(path: string, tg: TelegramType | null,
                        auth?: PrivateShardsAuth): Promise<string>
     {
-        let headers: any = {
-            "User-Agent": this.userAgent
-        };
-        if (auth) {
-            if (auth.pin) {
-                headers["Pin"] = auth.pin;
-            }
-            if (auth.autologin) {
-                headers["Autologin"] = auth.autologin;
-            }
-            if (auth.password) {
-                headers["Password"] = auth.password;
-            }
-        }
-
         return new Promise((resolve, reject) => {
+            if (this.blockNewRequests) {
+                throw new Error("New API requests are being blocked");
+            }
+            if (this._cleanup) {
+                throw new Error("API is shut down");
+            }
+
+            let headers: any = {
+                "User-Agent": this.userAgent
+            };
+            if (auth) {
+                if (auth.pin) {
+                    headers["Pin"] = auth.pin;
+                }
+                if (auth.autologin) {
+                    headers["Autologin"] = auth.autologin;
+                }
+                if (auth.password) {
+                    headers["Password"] = auth.password;
+                }
+            }
+
             const func = () => {
                 https.get(
                     {
@@ -542,7 +626,7 @@ export class Api {
                     }
                 ).on("error", reject);
             };
-            this._reqQueue.push({tg, func});
+            this._reqQueue.push({tg, func, reject});
         });
     }
 }

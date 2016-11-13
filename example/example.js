@@ -16,8 +16,8 @@
 
 var nsapi = require("../lib/api.js");
 
-// Create main API object
-var api = new nsapi.Api("Example user agent");
+// Create main API object (replace the user agent with your own)
+var api = new nsapi.NationStatesApi("<user agent>");
 
 // The following is a simple example that retrieves a nation's full name and
 // prints it to the console.
@@ -76,6 +76,7 @@ function example2() {
 // with a nation from the last 24 hours and print them to the console, along
 // with the PIN required for future private shard requests.
 function example3() {
+    // Replace the nation name and password with your own
     let auth = {
         password: "<your password>",
         updatePin: true

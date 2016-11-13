@@ -29,8 +29,8 @@ it to the console.
 ```js
 var nsapi = require("nsapi");
 
-// Create main API object
-var api = new nsapi.Api("Example user agent");
+// Create main API object (replace the user agent with your own)
+var api = new nsapi.NationStatesApi("<user agent>");
 
 // The following is a simple example that retrieves a nation's full name and
 // prints it to the console.
