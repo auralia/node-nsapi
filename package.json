@@ -1,6 +1,6 @@
 {
   "name": "nsapi",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Provides access to the NationStates API",
   "keywords": [
     "NationStates",

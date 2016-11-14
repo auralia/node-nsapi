@@ -45,9 +45,9 @@ const xmlParser = new xml2js.Parser(
     });
 
 /**
- * The current version of node-nsapi.
+ * The current version of nsapi.
  */
-export const VERSION = "0.1.3";
+export const VERSION = "0.1.4";
 
 /**
  * The API version specified in API requests.
@@ -112,6 +112,25 @@ export interface PrivateShardsAuth {
     updateAutologin?: boolean;
 }
 
+/**
+ * Information associated with a particular API request.
+ */
+interface ApiRequest {
+    /**
+     * The telegram type of the telegram request, or null if this is not a
+     * telegram request.
+     */
+    tg: TelegramType | null;
+    /**
+     * The function to call to make the request.
+     */
+    func: () => void;
+    /**
+     * The function to call to cancel the request.
+     */
+    reject: (err: any) => void;
+}
+
 export class NationStatesApi {
     private readonly _userAgent: string;
     private readonly _delay: boolean;
@@ -119,7 +138,7 @@ export class NationStatesApi {
     private readonly _recruitTgDelayMillis: number;
     private readonly _nonRecruitTgDelayMillis: number;
 
-    private readonly _reqQueue: any[];
+    private readonly _reqQueue: ApiRequest[];
     private readonly _reqInterval: any;
     private _reqLast: number;
     private _tgReqLast: number;
@@ -130,7 +149,7 @@ export class NationStatesApi {
     private _cleanup: boolean;
 
     /**
-     * Initializes a new instance of the Api class.
+     * Initializes a new instance of the NationStatesApi class.
      *
      * @param userAgent The user agent specified in API requests.
      * @param delay Whether a delay is introduced before API and telegram
@@ -167,21 +186,21 @@ export class NationStatesApi {
         }
 
         if (typeof recruitTgDelayMillis !== "undefined") {
-            if (recruitTgDelayMillis < 600)
+            if (recruitTgDelayMillis < 60000)
             {
                 throw new RangeError("Recruitment telegram delay must be"
                                      + " an integer greater than or equal"
-                                     + " to 600");
+                                     + " to 60000");
             }
             this._recruitTgDelayMillis = recruitTgDelayMillis;
         }
 
         if (typeof nonRecruitTgDelayMillis !== "undefined") {
-            if (nonRecruitTgDelayMillis < 600)
+            if (nonRecruitTgDelayMillis < 180000)
             {
                 throw new RangeError("Non-recruitment telegram delay must be"
                                      + " an integer greater than or equal"
-                                     + " to 600");
+                                     + " to 180000");
             }
             this._nonRecruitTgDelayMillis = nonRecruitTgDelayMillis;
         }
@@ -192,7 +211,7 @@ export class NationStatesApi {
         this._reqInProgress = false;
         if (this.delay) {
             this._reqInterval = setInterval(() => {
-                if (this._reqInProgress
+                if (this.reqInProgress
                     || this._reqQueue.length === 0
                     || this.blockExistingRequests)
                 {
@@ -233,7 +252,7 @@ export class NationStatesApi {
                     return;
                 }
 
-                let nextReq = this._reqQueue.shift();
+                let nextReq = this._reqQueue.shift()!;
                 nextReq.func();
             }, 0);
         }
@@ -319,11 +338,25 @@ export class NationStatesApi {
     }
 
     /**
+     * Gets whether or not an API request is in progress.
+     */
+    get reqInProgress() {
+        return this._reqInProgress;
+    }
+
+    /**
+     * Gets whether or not API requests are queued.
+     */
+    get reqQueued() {
+        return this._reqQueue.length !== 0;
+    }
+
+    /**
      * Cancels all requests in the API queue.
      */
     public clearQueue(): void {
         while (this._reqQueue.length > 0) {
-            this._reqQueue.pop().reject(new Error("API queue cleared"));
+            this._reqQueue.pop()!.reject(new Error("API queue cleared"));
         }
     }
 

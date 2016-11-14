@@ -81,12 +81,11 @@ function example3() {
         password: "<your password>",
         updatePin: true
     };
-    return api.nationRequest("<your nation>", ["notices"],
-                             {
-                                 "from": String(Math.floor(Date.now() / 1000)
-                                                - (60 * 60 * 24))
-                             },
-                             auth)
+    return api.nationRequest(
+        "<your nation>",
+        ["notices"],
+        {"from": String(Math.floor(Date.now() / 1000) - (60 * 60 * 24))},
+        auth)
               .then(function(data) {
                   console.log(data["notices"]);
                   console.log("PIN: " + auth.pin);
@@ -111,5 +110,5 @@ Promise.resolve()
            api.cleanup();
        })
        .catch(function(err) {
-           console.log(err.stack);
+           console.log(err);
        });
