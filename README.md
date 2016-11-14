@@ -29,21 +29,19 @@ it to the console.
 ```js
 var nsapi = require("nsapi");
 
-// Create main API object (replace the user agent with your own)
-var api = new nsapi.NationStatesApi("<user agent>");
+// Create main API object
+// TODO: Replace the user agent with your own
+var api = new nsapi.NsApi("<user agent>");
 
 // The following is a simple example that retrieves a nation's full name and
 // prints it to the console.
-function simpleExample() {
-    return api.nationRequest("Auralia", ["fullname"])
-              .then(function(data) {
-                  console.log(data["fullname"]);
-              });
-}
-
-simpleExample().then(function() {
-    api.cleanup();
-});
+return api.nationRequest("Auralia", ["fullname"])
+          .then(function(data) {
+              console.log(data["fullname"]);
+          })
+          .then(function() {
+              api.cleanup();
+          });
 ```
 
 For additional examples, consult the example.js file.

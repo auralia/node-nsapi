@@ -16,11 +16,12 @@
 
 var nsapi = require("../lib/api.js");
 
-// Create main API object (replace the user agent with your own)
-var api = new nsapi.NationStatesApi("<user agent>");
+// Create main API object
+// TODO: Replace the user agent with your own
+var api = new nsapi.NsApi("<user agent>");
 
-// The following is a simple example that retrieves a nation's full name and
-// prints it to the console.
+// The following is a simple example that retrieves the nation Auralia's full
+// name and prints it to the console.
 function example1() {
     return api.nationRequest("Auralia", ["fullname"])
               .then(function(data) {
@@ -28,9 +29,9 @@ function example1() {
               });
 }
 
-// The following is a more complex example that retrieves and sorts a list of
-// nations in a region by their influence score, then prints the list to the
-// console.
+// The following is a more complex example that retrieves and sorts the list of
+// nations in the region of Catholic by their influence score, then prints the
+// list to the console.
 function example2() {
     return api.regionRequest("Catholic", ["nations"])
               .then(function(data) {
@@ -76,7 +77,7 @@ function example2() {
 // with a nation from the last 24 hours and print them to the console, along
 // with the PIN required for future private shard requests.
 function example3() {
-    // Replace the nation name and password with your own
+    // TODO: Replace the nation name and password with your own
     let auth = {
         password: "<your password>",
         updatePin: true
@@ -106,9 +107,9 @@ Promise.resolve()
            console.log("\nExample 3:\n");
            return example3();
        })
-       .then(function() {
-           api.cleanup();
-       })
        .catch(function(err) {
            console.log(err);
+       })
+       .then(function() {
+           api.cleanup();
        });

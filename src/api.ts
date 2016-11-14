@@ -131,7 +131,10 @@ interface ApiRequest {
     reject: (err: any) => void;
 }
 
-export class NationStatesApi {
+/**
+ * Provides access to the NationStates API.
+ */
+export class NsApi {
     private readonly _userAgent: string;
     private readonly _delay: boolean;
     private readonly _apiDelayMillis: number;
@@ -177,33 +180,27 @@ export class NationStatesApi {
 
         this._delay = delay;
 
-        if (typeof apiDelayMillis !== "undefined") {
-            if (apiDelayMillis < 600) {
-                throw new RangeError("API delay must be an integer greater"
-                                     + " than or equal to 600");
-            }
-            this._apiDelayMillis = apiDelayMillis;
+        if (apiDelayMillis < 600) {
+            throw new RangeError("API delay must be an integer greater"
+                                 + " than or equal to 600");
         }
+        this._apiDelayMillis = apiDelayMillis;
 
-        if (typeof recruitTgDelayMillis !== "undefined") {
-            if (recruitTgDelayMillis < 60000)
-            {
-                throw new RangeError("Recruitment telegram delay must be"
-                                     + " an integer greater than or equal"
-                                     + " to 60000");
-            }
-            this._recruitTgDelayMillis = recruitTgDelayMillis;
+        if (recruitTgDelayMillis < 180000)
+        {
+            throw new RangeError("Recruitment telegram delay must be"
+                                 + " an integer greater than or equal"
+                                 + " to 180000");
         }
+        this._recruitTgDelayMillis = recruitTgDelayMillis;
 
-        if (typeof nonRecruitTgDelayMillis !== "undefined") {
-            if (nonRecruitTgDelayMillis < 180000)
-            {
-                throw new RangeError("Non-recruitment telegram delay must be"
-                                     + " an integer greater than or equal"
-                                     + " to 180000");
-            }
-            this._nonRecruitTgDelayMillis = nonRecruitTgDelayMillis;
+        if (nonRecruitTgDelayMillis < 60000)
+        {
+            throw new RangeError("Non-recruitment telegram delay must be"
+                                 + " an integer greater than or equal"
+                                 + " to 60000");
         }
+        this._nonRecruitTgDelayMillis = nonRecruitTgDelayMillis;
 
         this._reqQueue = [];
         this._reqLast = Date.now();
