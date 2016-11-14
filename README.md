@@ -27,14 +27,13 @@ The following is a simple example that retrieves a nation's full name and prints
 it to the console.
 
 ```js
+// The following is a simple example that retrieves the nation Auralia's full
+// name and prints it to the console.
+
 var nsapi = require("nsapi");
 
-// Create main API object
 // TODO: Replace the user agent with your own
 var api = new nsapi.NsApi("<user agent>");
-
-// The following is a simple example that retrieves a nation's full name and
-// prints it to the console.
 return api.nationRequest("Auralia", ["fullname"])
           .then(function(data) {
               console.log(data["fullname"]);

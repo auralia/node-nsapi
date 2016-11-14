@@ -2,6 +2,7 @@
 
 * Bug fixes
 * Documentation fixes
+* Dependency fixes
 
 ## 0.1.3 ##
 

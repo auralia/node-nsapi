@@ -15,7 +15,8 @@
  */
 
 import * as https from "https";
-const xml2js = require("xml2js");
+import * as xml2js from "xml2js";
+import {Promise} from "es6-promise";
 
 const xmlParser = new xml2js.Parser(
     {

@@ -19,26 +19,26 @@
 var gulp = require("gulp");
 var merge2 = require("merge2");
 var sourcemaps = require("gulp-sourcemaps");
-var ts = require("gulp-typescript");
+var typescript = require("gulp-typescript");
 
 gulp.task("default", ["prod"]);
 
-var tsProject = ts.createProject("tsconfig.json");
+var project = typescript.createProject("tsconfig.json");
 gulp.task("prod", function() {
-    var tsResult = tsProject.src()
-                            .pipe(tsProject(ts.reporter.longReporter()));
-    return merge2([tsResult.js
+    var result = project.src()
+                            .pipe(project(typescript.reporter.longReporter()));
+    return merge2([result.js
                            .pipe(gulp.dest("lib")),
-                   tsResult.dts
+                   result.dts
                            .pipe(gulp.dest("lib"))]);
 });
 gulp.task("dev", function() {
-    var tsResult = tsProject.src()
+    var result = project.src()
                             .pipe(sourcemaps.init())
-                            .pipe(tsProject(ts.reporter.longReporter()));
-    return merge2([tsResult.js
+                            .pipe(project(typescript.reporter.longReporter()));
+    return merge2([result.js
                            .pipe(sourcemaps.write())
                            .pipe(gulp.dest("lib")),
-                   tsResult.dts
+                   result.dts
                            .pipe(gulp.dest("lib"))]);
 });
