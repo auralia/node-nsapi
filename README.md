@@ -12,6 +12,7 @@ nsapi features the following:
   world, World Assembly, telegram, and authentication APIs)
 * rate-limiting to prevent blocked access to the API, including for the 
   telegram API (recruitment and non-recruitment)
+* optional URI-based request caching
 * XML decoding (all data is returned in simple JavaScript data structures)
 * support for version 9 of the NationStates API
 
@@ -31,9 +32,6 @@ The following is a simple example that retrieves a nation's full name and prints
 it to the console.
 
 ```js
-// The following is a simple example that retrieves the nation Auralia's full
-// name and prints it to the console.
-
 var nsapi = require("nsapi");
 
 // TODO: Replace the user agent with your own

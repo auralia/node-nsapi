@@ -2,6 +2,7 @@
 
 * Bug fixes
 * Added TypeDoc documentation
+* Add support for request caching
 
 ## 0.1.4 ##
 
