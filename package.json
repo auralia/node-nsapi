@@ -34,8 +34,8 @@
   },
   "dependencies": {
     "@types/clone": "^0.1.30",
-    "@types/node": "^6.0.47",
-    "@types/xml2js": "0.0.28",
+    "@types/node": "^6.0.48",
+    "@types/xml2js": "0.0.29",
     "clone": "^2.0.0",
     "es6-promise": "^4.0.5",
     "gulp-typedoc": "^2.0.0",
