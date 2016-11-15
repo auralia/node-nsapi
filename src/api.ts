@@ -99,8 +99,8 @@ export interface PrivateShardsAuth {
      */
     pin?: string;
     /**
-     * Updates the value of pin with the value of the X-PIN header the first
-     * time this object is used in a request.
+     * If true, updates the value of pin with the value of the X-PIN header
+     * the first time this object is used in a request.
      */
     updatePin?: boolean;
     /**
@@ -108,8 +108,8 @@ export interface PrivateShardsAuth {
      */
     autologin?: string;
     /**
-     * Updates the value of autologin with the value of the X-Autologin header
-     * the first time this object is used in a request.
+     * If true, updates the value of autologin with the value of the
+     * X-Autologin header the first time this object is used in a request.
      */
     updateAutologin?: boolean;
 }
