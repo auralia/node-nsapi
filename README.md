@@ -7,6 +7,7 @@ applications to easily access the NationStates API without worrying about
 making HTTP requests, decoding XML or rate limiting.
 
 nsapi features the following:
+
 * a complete interface to the NationStates API (supports the nation, region,
   world, World Assembly, telegram, and authentication APIs)
 * rate-limiting to prevent blocked access to the API, including for the 
@@ -18,8 +19,11 @@ nsapi features the following:
 
 You can install nsapi using npm: `npm install nsapi`.
 
-You can also build nsapi from source using Gulp. There are two targets: `prod`
-and `dev`. The only difference between them is that `dev` includes source maps.
+You can also build nsapi from source using Gulp. There are two main targets: 
+`prod` and `dev`. The only difference between them is that `dev` includes
+source maps. There is also a `docs` target to generate documentation.
+
+Consult the documentation for more information on API structure and methods.
 
 ## Examples ##
 

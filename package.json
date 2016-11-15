@@ -1,6 +1,6 @@
 {
   "name": "nsapi",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Provides access to the NationStates API",
   "keywords": [
     "NationStates",
@@ -36,6 +36,8 @@
     "@types/node": "^6.0.47",
     "@types/xml2js": "0.0.28",
     "es6-promise": "^4.0.5",
+    "gulp-typedoc": "^2.0.0",
+    "typedoc": "^0.5.1",
     "xml2js": "^0.4.17"
   }
 }

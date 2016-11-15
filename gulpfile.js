@@ -19,6 +19,7 @@
 var gulp = require("gulp");
 var merge2 = require("merge2");
 var sourcemaps = require("gulp-sourcemaps");
+var typedoc = require("gulp-typedoc");
 var typescript = require("gulp-typescript");
 
 gulp.task("default", ["prod"]);
@@ -26,19 +27,29 @@ gulp.task("default", ["prod"]);
 var project = typescript.createProject("tsconfig.json");
 gulp.task("prod", function() {
     var result = project.src()
-                            .pipe(project(typescript.reporter.longReporter()));
+                        .pipe(project(typescript.reporter.longReporter()));
     return merge2([result.js
-                           .pipe(gulp.dest("lib")),
+                         .pipe(gulp.dest("lib")),
                    result.dts
-                           .pipe(gulp.dest("lib"))]);
+                         .pipe(gulp.dest("lib"))]);
 });
 gulp.task("dev", function() {
     var result = project.src()
-                            .pipe(sourcemaps.init())
-                            .pipe(project(typescript.reporter.longReporter()));
+                        .pipe(sourcemaps.init())
+                        .pipe(project(typescript.reporter.longReporter()));
     return merge2([result.js
-                           .pipe(sourcemaps.write())
-                           .pipe(gulp.dest("lib")),
+                         .pipe(sourcemaps.write())
+                         .pipe(gulp.dest("lib")),
                    result.dts
-                           .pipe(gulp.dest("lib"))]);
+                         .pipe(gulp.dest("lib"))]);
+});
+gulp.task("docs", function() {
+    return gulp.src("src")
+               .pipe(typedoc({
+                                 mode: "file",
+                                 module: "commonjs",
+                                 out: "docs",
+                                 target: "es5",
+                                 ignoreCompilerErrors: true
+                             }));
 });
