@@ -45,7 +45,7 @@ return api.nationRequest("Auralia", ["fullname"])
           });
 ```
 
-For additional examples, consult the example.js file.
+For additional examples, consult the examples/example.js file.
 
 ## License ##
 
