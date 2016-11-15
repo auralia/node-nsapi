@@ -2,9 +2,9 @@
 
 [![npm version](https://badge.fury.io/js/nsapi.svg)](https://badge.fury.io/js/nsapi)
 
-nsapi is a free and open source library that allows Node.js and web 
-applications to easily access the NationStates API without worrying about 
-making HTTP requests, decoding XML or rate limiting.
+nsapi is a free and open source library that allows Node.js applications to 
+easily access the NationStates API without worrying about making HTTP requests, 
+decoding XML, caching or rate limiting.
 
 nsapi features the following:
 
