@@ -24,7 +24,8 @@ You can also build nsapi from source using Gulp. There are two main targets:
 `prod` and `dev`. The only difference between them is that `dev` includes
 source maps. There is also a `docs` target to generate documentation.
 
-Consult the documentation for more information on API structure and methods.
+Consult [the documentation](https://auralia.github.io/node-nsapi/) for more 
+information on API structure and methods.
 
 ## Examples ##
 
