@@ -705,10 +705,6 @@ export class NsApi {
 
     /**
      * Creates a NationStates API path from a set of parameters.
-     *
-     * @param params The parameters to add to the path.
-     *
-     * @return A NationStates API path.
      */
     private apiPath(params: string): string {
         let path = "/cgi-bin/api.cgi?";
@@ -805,10 +801,6 @@ export class NsApi {
     /**
      * Converts names to a fixed form: all lowercase, with spaces replaced
      * with underscores.
-     *
-     * @param name The name to convert.
-     *
-     * @return The converted name.
      */
     private static toId(name: string) {
         return name.replace("_", " ").trim().toLowerCase().replace(" ", "_");
