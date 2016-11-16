@@ -1,3 +1,8 @@
+## 0.1.8 ##
+
+* Improve errors
+* Add support for immediate requests
+
 ## 0.1.7 ##
 
 * Bug fixes

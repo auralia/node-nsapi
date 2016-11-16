@@ -49,7 +49,7 @@ const xmlParser = new xml2js.Parser(
 /**
  * The current version of nsapi.
  */
-export const VERSION = "0.1.7";
+export const VERSION = "0.1.8";
 
 /**
  * The API version specified in API requests.
@@ -112,6 +112,38 @@ export interface PrivateShardsAuth {
      * X-Autologin header the first time this object is used in a request.
      */
     updateAutologin?: boolean;
+}
+
+/**
+ * Error thrown during API requests.
+ */
+export class ApiError extends Error {
+    /**
+     * The message associated with the error.
+     */
+    public message: string;
+    /**
+     * The HTTP response code returned by the API.
+     */
+    public responseCode?: number;
+    /**
+     * The HTTP response text returned by the API.
+     */
+    public responseText?: string;
+
+    /**
+     * Initializes a new instance of the ApiError class.
+     *
+     * @param message The message associated with the error.
+     * @param responseCode The HTTP response code returned by the API.
+     * @param responseText The HTTP response text returned by the API.
+     */
+    constructor(message: string, responseCode?: number, responseText?: string) {
+        super(message);
+        this.message = message;
+        this.responseCode = responseCode;
+        this.responseText = responseText;
+    }
 }
 
 /**
@@ -186,6 +218,11 @@ export class NsApi {
      *                            true.
      * @param requestCacheValiditySecs The number of seconds that a request
      *                                 should stay cached. Defaults to 900.
+     * @param allowImmediateRequests Allows API requests immediately after the
+     *                               API is initialized without delay.
+     * @param allowImmediateTgRequests Allows telegram requests immediately
+     *                                 after the API is initialized without
+     *                                 delay.
      */
     constructor(userAgent: string,
                 delay: boolean = true,
@@ -193,7 +230,9 @@ export class NsApi {
                 nonRecruitTgDelayMillis: number = 60000,
                 recruitTgDelayMillis: number = 180000,
                 requestCacheEnabled: boolean = true,
-                requestCacheValiditySecs: number = 900)
+                requestCacheValiditySecs: number = 900,
+                allowImmediateRequests: boolean = true,
+                allowImmediateTgRequests: boolean = true)
     {
         this.userAgent = userAgent;
         this.delay = delay;
@@ -202,8 +241,16 @@ export class NsApi {
         this.recruitTgDelayMillis = recruitTgDelayMillis;
 
         this._reqQueue = [];
-        this._reqLast = Date.now();
-        this._tgReqLast = Date.now();
+        if (allowImmediateRequests) {
+            this._reqLast = Date.now() - this.apiDelayMillis;
+        } else {
+            this._reqLast = Date.now();
+        }
+        if (allowImmediateTgRequests) {
+            this._tgReqLast = Date.now() - this.recruitTgDelayMillis;
+        } else {
+            this._tgReqLast = Date.now();
+        }
         this._reqInProgress = false;
         if (this.delay) {
             this._reqInterval = setInterval(() => {
@@ -586,9 +633,9 @@ export class NsApi {
                            if (!(typeof data === "string"
                                  && data.trim().toLowerCase() === "queued"))
                            {
-                               throw new Error("telegram API response did not"
-                                               + " consist of the string"
-                                               + " 'queued'");
+                               throw new ApiError(
+                                   "telegram API response did not consist of"
+                                   + " the string 'queued'", 200, data);
                            }
                        });
         });
@@ -630,9 +677,9 @@ export class NsApi {
                            {
                                return false;
                            } else {
-                               throw new Error("authentication API response did"
-                                               + " not consist of the string"
-                                               + " '1' or '0'");
+                               throw new ApiError(
+                                   "authentication API response did not consist"
+                                   + " of the string '1' or '0'", 200, data);
                            }
                        });
         });
@@ -786,9 +833,11 @@ export class NsApi {
 
                                 resolve(clone(data));
                             } else {
-                                reject(new Error(
+                                reject(new ApiError(
                                     `API returned HTTP response code`
-                                    + ` ${res.statusCode}`));
+                                    + ` ${res.statusCode}`,
+                                    res.statusCode,
+                                    data));
                             }
                         });
                     }

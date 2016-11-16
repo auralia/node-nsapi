@@ -155,13 +155,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>NsApi<span class="tsd-signature-symbol">(</span>userAgent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, delay<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, apiDelayMillis<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, nonRecruitTgDelayMillis<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, recruitTgDelayMillis<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, requestCacheEnabled<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, requestCacheValiditySecs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="nsapi.html" class="tsd-signature-type">NsApi</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>NsApi<span class="tsd-signature-symbol">(</span>userAgent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, delay<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, apiDelayMillis<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, nonRecruitTgDelayMillis<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, recruitTgDelayMillis<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, requestCacheEnabled<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, requestCacheValiditySecs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, allowImmediateRequests<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, allowImmediateTgRequests<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="nsapi.html" class="tsd-signature-type">NsApi</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:169</li>
+									<li>Defined in api.ts:201</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -235,6 +235,25 @@
 										</div>
 									</div>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> allowImmediateRequests: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>Allows API requests immediately after the
+											API is initialized without delay.</p>
+										</div>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> allowImmediateTgRequests: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>Allows telegram requests immediately
+												after the API is initialized without
+											delay.</p>
+										</div>
+									</div>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="nsapi.html" class="tsd-signature-type">NsApi</a></h4>
 						</li>
@@ -249,7 +268,7 @@
 					<div class="tsd-signature tsd-kind-icon">_api<wbr>Delay<wbr>Millis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:153</li>
+							<li>Defined in api.ts:185</li>
 						</ul>
 					</aside>
 				</section>
@@ -259,7 +278,7 @@
 					<div class="tsd-signature tsd-kind-icon">_block<wbr>Existing<wbr>Requests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:167</li>
+							<li>Defined in api.ts:199</li>
 						</ul>
 					</aside>
 				</section>
@@ -269,7 +288,7 @@
 					<div class="tsd-signature tsd-kind-icon">_block<wbr>New<wbr>Requests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:168</li>
+							<li>Defined in api.ts:200</li>
 						</ul>
 					</aside>
 				</section>
@@ -279,7 +298,7 @@
 					<div class="tsd-signature tsd-kind-icon">_cleanup<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:169</li>
+							<li>Defined in api.ts:201</li>
 						</ul>
 					</aside>
 				</section>
@@ -289,7 +308,7 @@
 					<div class="tsd-signature tsd-kind-icon">_delay<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:152</li>
+							<li>Defined in api.ts:184</li>
 						</ul>
 					</aside>
 				</section>
@@ -299,7 +318,7 @@
 					<div class="tsd-signature tsd-kind-icon">_non<wbr>Recruit<wbr>TgDelay<wbr>Millis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:155</li>
+							<li>Defined in api.ts:187</li>
 						</ul>
 					</aside>
 				</section>
@@ -309,7 +328,7 @@
 					<div class="tsd-signature tsd-kind-icon">_recruit<wbr>TgDelay<wbr>Millis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:154</li>
+							<li>Defined in api.ts:186</li>
 						</ul>
 					</aside>
 				</section>
@@ -319,7 +338,7 @@
 					<div class="tsd-signature tsd-kind-icon">_req<wbr>Cache<span class="tsd-signature-symbol">:</span> <a href="../interfaces/cache.html" class="tsd-signature-type">Cache</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:163</li>
+							<li>Defined in api.ts:195</li>
 						</ul>
 					</aside>
 				</section>
@@ -329,7 +348,7 @@
 					<div class="tsd-signature tsd-kind-icon">_req<wbr>Cache<wbr>Enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:164</li>
+							<li>Defined in api.ts:196</li>
 						</ul>
 					</aside>
 				</section>
@@ -339,7 +358,7 @@
 					<div class="tsd-signature tsd-kind-icon">_req<wbr>Cache<wbr>Validity<wbr>Secs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:165</li>
+							<li>Defined in api.ts:197</li>
 						</ul>
 					</aside>
 				</section>
@@ -349,7 +368,7 @@
 					<div class="tsd-signature tsd-kind-icon">_req<wbr>InProgress<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:161</li>
+							<li>Defined in api.ts:193</li>
 						</ul>
 					</aside>
 				</section>
@@ -359,7 +378,7 @@
 					<div class="tsd-signature tsd-kind-icon">_req<wbr>Interval<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:158</li>
+							<li>Defined in api.ts:190</li>
 						</ul>
 					</aside>
 				</section>
@@ -369,7 +388,7 @@
 					<div class="tsd-signature tsd-kind-icon">_req<wbr>Last<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:159</li>
+							<li>Defined in api.ts:191</li>
 						</ul>
 					</aside>
 				</section>
@@ -379,7 +398,7 @@
 					<div class="tsd-signature tsd-kind-icon">_req<wbr>Queue<span class="tsd-signature-symbol">:</span> <a href="../interfaces/apirequest.html" class="tsd-signature-type">ApiRequest</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:157</li>
+							<li>Defined in api.ts:189</li>
 						</ul>
 					</aside>
 				</section>
@@ -389,7 +408,7 @@
 					<div class="tsd-signature tsd-kind-icon">_tg<wbr>Req<wbr>Last<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:160</li>
+							<li>Defined in api.ts:192</li>
 						</ul>
 					</aside>
 				</section>
@@ -399,7 +418,7 @@
 					<div class="tsd-signature tsd-kind-icon">_user<wbr>Agent<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:151</li>
+							<li>Defined in api.ts:183</li>
 						</ul>
 					</aside>
 				</section>
@@ -417,7 +436,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:303</li>
+									<li>Defined in api.ts:350</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -430,7 +449,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:310</li>
+									<li>Defined in api.ts:357</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -459,7 +478,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:362</li>
+									<li>Defined in api.ts:409</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -473,7 +492,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:370</li>
+									<li>Defined in api.ts:417</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -503,7 +522,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:378</li>
+									<li>Defined in api.ts:425</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -517,7 +536,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:386</li>
+									<li>Defined in api.ts:433</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -547,7 +566,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:288</li>
+									<li>Defined in api.ts:335</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -561,7 +580,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:296</li>
+									<li>Defined in api.ts:343</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -591,7 +610,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:321</li>
+									<li>Defined in api.ts:368</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -604,7 +623,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:328</li>
+									<li>Defined in api.ts:375</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -633,7 +652,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:341</li>
+									<li>Defined in api.ts:388</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -646,7 +665,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:348</li>
+									<li>Defined in api.ts:395</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -674,7 +693,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:393</li>
+									<li>Defined in api.ts:440</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -696,7 +715,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:400</li>
+									<li>Defined in api.ts:447</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -719,7 +738,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:416</li>
+									<li>Defined in api.ts:463</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -732,7 +751,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:423</li>
+									<li>Defined in api.ts:470</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -761,7 +780,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:431</li>
+									<li>Defined in api.ts:478</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -775,7 +794,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:439</li>
+									<li>Defined in api.ts:486</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -805,7 +824,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:268</li>
+									<li>Defined in api.ts:315</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -818,7 +837,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:275</li>
+									<li>Defined in api.ts:322</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -849,7 +868,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:709</li>
+									<li>Defined in api.ts:756</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -877,7 +896,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:726</li>
+									<li>Defined in api.ts:773</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -922,7 +941,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:611</li>
+									<li>Defined in api.ts:658</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -970,7 +989,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:464</li>
+									<li>Defined in api.ts:511</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -994,7 +1013,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:407</li>
+									<li>Defined in api.ts:454</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1016,7 +1035,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:450</li>
+									<li>Defined in api.ts:497</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1038,7 +1057,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:483</li>
+									<li>Defined in api.ts:530</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1101,7 +1120,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:506</li>
+									<li>Defined in api.ts:553</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1158,7 +1177,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:573</li>
+									<li>Defined in api.ts:620</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1216,7 +1235,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:547</li>
+									<li>Defined in api.ts:594</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1273,7 +1292,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:528</li>
+									<li>Defined in api.ts:575</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1324,7 +1343,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:653</li>
+									<li>Defined in api.ts:700</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1381,7 +1400,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:805</li>
+									<li>Defined in api.ts:854</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1417,6 +1436,9 @@
 					</li>
 					<li class=" tsd-kind-enum">
 						<a href="../enums/worldassemblycouncil.html" class="tsd-kind-icon">World<wbr>Assembly<wbr>Council</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="apierror.html" class="tsd-kind-icon">Api<wbr>Error</a>
 					</li>
 				</ul>
 				<ul class="current">
