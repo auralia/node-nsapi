@@ -92,7 +92,7 @@
 				<pre><code class="lang-js"><span class="hljs-keyword">var</span> nsapi = <span class="hljs-built_in">require</span>(<span class="hljs-string">"nsapi"</span>);
 
 <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> Replace the user agent with your own</span>
-<span class="hljs-keyword">var</span> api = <span class="hljs-keyword">new</span> nsapi.NsApi(<span class="hljs-string">"&lt;user agent&gt;"</span>);
+<span class="hljs-keyword">var</span> api = <span class="hljs-keyword">new</span> nsapi.NsApi(<span class="hljs-string">"Your nation's name"</span>);
 <span class="hljs-keyword">return</span> api.nationRequest(<span class="hljs-string">"Auralia"</span>, [<span class="hljs-string">"fullname"</span>])
           .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
               <span class="hljs-built_in">console</span>.log(data[<span class="hljs-string">"fullname"</span>]);

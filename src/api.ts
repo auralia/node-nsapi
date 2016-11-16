@@ -579,7 +579,7 @@ export class NsApi {
             params += "&client=" + encodeURIComponent(clientKey);
             params += "&tgid=" + encodeURIComponent(tgId);
             params += "&key=" + encodeURIComponent(tgKey);
-            params += "&to=" + encodeURIComponent(recipient);
+            params += "&to=" + encodeURIComponent(NsApi.toId(recipient));
 
             return this.apiRequest(this.apiPath(params), type, undefined)
                        .then((data: string) => {
@@ -609,11 +609,11 @@ export class NsApi {
      *         authenticated.
      */
     public authenticateRequest(nation: string, checksum: string,
-                               token: string | undefined): Promise<boolean>
+                               token?: string): Promise<boolean>
     {
         return Promise.resolve().then(() => {
             let params = "a=verify";
-            params += "&nation=" + encodeURIComponent(nation);
+            params += "&nation=" + encodeURIComponent(NsApi.toId(nation));
             params += "&checksum=" + encodeURIComponent(checksum);
             if (token) {
                 params += "&token=" + encodeURIComponent(token);
@@ -707,9 +707,9 @@ export class NsApi {
      * Creates a NationStates API path from a set of parameters.
      */
     private apiPath(params: string): string {
-        let path = "/cgi-bin/api.cgi?";
-        path += params;
-        path += "&userAgent=" + encodeURIComponent(this.userAgent);
+        let path = "/cgi-bin/api.cgi?userAgent="
+                   + encodeURIComponent(this.userAgent);
+        path += "&" + params;
         return path;
     }
 

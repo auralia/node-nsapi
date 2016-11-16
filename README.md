@@ -36,7 +36,7 @@ it to the console.
 var nsapi = require("nsapi");
 
 // TODO: Replace the user agent with your own
-var api = new nsapi.NsApi("<user agent>");
+var api = new nsapi.NsApi("Your nation's name");
 return api.nationRequest("Auralia", ["fullname"])
           .then(function(data) {
               console.log(data["fullname"]);
