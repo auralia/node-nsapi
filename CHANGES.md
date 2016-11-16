@@ -1,8 +1,11 @@
-## 0.1.6 ##
+## 0.1.7 ##
 
 * Bug fixes
-* Fix dependencies
 * Add additional examples
+
+## 0.1.6 ##
+
+* Fix dependencies
 
 ## 0.1.5 ##
 

@@ -49,7 +49,7 @@ const xmlParser = new xml2js.Parser(
 /**
  * The current version of nsapi.
  */
-export const VERSION = "0.1.6";
+export const VERSION = "0.1.7";
 
 /**
  * The API version specified in API requests.
