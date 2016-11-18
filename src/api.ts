@@ -78,11 +78,11 @@ export enum TelegramType {
     /**
      * A telegram that is for the purposes of recruitment.
      */
-    Recruitment = 1,
+    Recruitment,
         /**
          * A telegram that is not for the purposes of recruitment.
          */
-    NonRecruitment = 2
+    NonRecruitment
 }
 
 /**
