@@ -69,8 +69,9 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Information used to authenticate with the NationStates nation API in order
-						to use private shards.</p>
+						<p>Used to authenticate with the nation API in order to use private shards.
+							Private shards provide access to information that is only available to
+						logged-in nations.</p>
 					</div>
 				</div>
 			</section>
@@ -112,8 +113,13 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The autologin value to be used in authentication requests.</p>
+							<p>The autologin string to be used to authenticate the nation API request.
+								It is an encrypted version of your password that will keep working
+							until your password is changed.</p>
 						</div>
+						<p>You probably don&#39;t know what this is initially. If updateAutologin is
+							enabled, this value will be updated with the autologin string retrieved
+						after the first request using this object.</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
@@ -122,12 +128,13 @@
 					<div class="tsd-signature tsd-kind-icon">password<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:96</li>
+							<li>Defined in api.ts:85</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The password of the nation specified in the request.</p>
+							<p>The password of the nation specified in the nation API request. This
+							only needs to be provided if a PIN or autologin string is not specified.</p>
 						</div>
 					</div>
 				</section>
@@ -137,13 +144,17 @@
 					<div class="tsd-signature tsd-kind-icon">pin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:100</li>
+							<li>Defined in api.ts:94</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The PIN to be used in authentication requests.</p>
+							<p>The PIN to be used to authenticate the nation API request. It will keep
+							working until you log out, log in again, or go idle for two hours.</p>
 						</div>
+						<p>You probably don&#39;t know what this is initially. If updatePin is enabled,
+							this value will be updated with the PIN retrieved after the first
+						request using this object.</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
@@ -168,7 +179,7 @@
 					<div class="tsd-signature tsd-kind-icon">update<wbr>Pin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:105</li>
+							<li>Defined in api.ts:99</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -201,12 +212,6 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="../classes/nsapi.html" class="tsd-kind-icon">Ns<wbr>Api</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-is-not-exported">
-						<a href="apirequest.html" class="tsd-kind-icon">Api<wbr>Request</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-is-not-exported">
-						<a href="cache.html" class="tsd-kind-icon">Cache</a>
 					</li>
 				</ul>
 				<ul class="current">

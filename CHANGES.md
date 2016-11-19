@@ -1,3 +1,8 @@
+## 0.1.9 ##
+
+* Bug fixes
+* Documentation updates
+
 ## 0.1.8 ##
 
 * Improve errors

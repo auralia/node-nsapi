@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import * as clone from "clone";
 import {Promise} from "es6-promise";
 import * as https from "https";
@@ -47,55 +46,50 @@ const xmlParser = new xml2js.Parser(
     });
 
 /**
- * The current version of nsapi.
+ * The version of nsapi.
  */
-export const VERSION = "0.1.8";
+export const VERSION = "0.1.9";
 
 /**
- * The API version specified in API requests.
+ * The version specified in API requests.
  */
 export const API_VERSION = 9;
 
 /**
- * The council of the World Assembly to be specified in World Assembly API
- * requests.
+ * The council specified in World Assembly API requests.
  */
 export enum WorldAssemblyCouncil {
-    /**
-     * The General Assembly.
-     */
     GeneralAssembly = 1,
-        /**
-         * The Security Council.
-         */
     SecurityCouncil = 2
 }
 
 /**
- * The telegram type specified for the purposes of rate limitation.
+ * The telegram type for rate limit purposes. Recruitment telegrams have a
+ * stricter rate limit than non-recruitment telegrams.
  */
 export enum TelegramType {
-    /**
-     * A telegram that is for the purposes of recruitment.
-     */
     Recruitment,
-        /**
-         * A telegram that is not for the purposes of recruitment.
-         */
     NonRecruitment
 }
 
 /**
- * Information used to authenticate with the NationStates nation API in order
- * to use private shards.
+ * Used to authenticate with the nation API in order to use private shards.
+ * Private shards provide access to information that is only available to
+ * logged-in nations.
  */
 export interface PrivateShardsAuth {
     /**
-     * The password of the nation specified in the request.
+     * The password of the nation specified in the nation API request. This
+     * only needs to be provided if a PIN or autologin string is not specified.
      */
     password?: string;
     /**
-     * The PIN to be used in authentication requests.
+     * The PIN to be used to authenticate the nation API request. It will keep
+     * working until you log out, log in again, or go idle for two hours.
+     *
+     * You probably don't know what this is initially. If updatePin is enabled,
+     * this value will be updated with the PIN retrieved after the first
+     * request using this object.
      */
     pin?: string;
     /**
@@ -104,7 +98,13 @@ export interface PrivateShardsAuth {
      */
     updatePin?: boolean;
     /**
-     * The autologin value to be used in authentication requests.
+     * The autologin string to be used to authenticate the nation API request.
+     * It is an encrypted version of your password that will keep working
+     * until your password is changed.
+     *
+     * You probably don't know what this is initially. If updateAutologin is
+     * enabled, this value will be updated with the autologin string retrieved
+     * after the first request using this object.
      */
     autologin?: string;
     /**
@@ -115,7 +115,8 @@ export interface PrivateShardsAuth {
 }
 
 /**
- * Error thrown during API requests.
+ * This error is thrown after a failed API request and contains additional
+ * information about the failed request.
  */
 export class ApiError extends Error {
     /**
@@ -147,36 +148,6 @@ export class ApiError extends Error {
 }
 
 /**
- * Represents a request cache.
- */
-interface Cache {
-    /**
-     * Maps a URI to a cache entry, which consists of a number and any cached
-     * data.
-     */
-    [url: string]: {time: number, data: any}
-}
-
-/**
- * Information associated with a particular API request.
- */
-interface ApiRequest {
-    /**
-     * The telegram type of the telegram request, or null if this is not a
-     * telegram request.
-     */
-    tg: TelegramType | undefined;
-    /**
-     * The function to call to make the request.
-     */
-    func: () => void;
-    /**
-     * The function to call to cancel the request.
-     */
-    reject: (err: any) => void;
-}
-
-/**
  * Provides access to the NationStates API.
  */
 export class NsApi {
@@ -186,15 +157,24 @@ export class NsApi {
     private _recruitTgDelayMillis: number;
     private _nonRecruitTgDelayMillis: number;
 
-    private readonly _reqQueue: ApiRequest[];
-    private readonly _reqInterval: any;
-    private _reqLast: number;
-    private _tgReqLast: number;
-    private _reqInProgress: boolean;
+    private readonly _queue: {
+        tg: TelegramType | undefined;
+        func: () => void;
+        reject: (err: any) => void;
+    }[];
+    private readonly _interval: any;
+    private _lastRequestTime: number;
+    private _lastTgTime: number;
+    private _requestInProgress: boolean;
 
-    private readonly _reqCache: Cache;
-    private _reqCacheEnabled: boolean;
-    private _reqCacheValiditySecs: number;
+    private _cacheApiRequests: boolean;
+    private readonly _cache: {
+        [url: string]: {
+            time: number,
+            data: any
+        }
+    };
+    private _cacheTime: number;
 
     private _blockExistingRequests: boolean;
     private _blockNewRequests: boolean;
@@ -203,35 +183,35 @@ export class NsApi {
     /**
      * Initializes a new instance of the NationStatesApi class.
      *
-     * @param userAgent The user agent specified in API requests.
+     * @param userAgent A string identifying you to the NationStates API.
+     *                  Using the name of your main nation is recommended.
      * @param delay Whether a delay is introduced before API and telegram
      *              requests. Defaults to true.
      * @param apiDelayMillis The delay before API requests in milliseconds.
      *                       Defaults to 600.
      * @param nonRecruitTgDelayMillis The delay before non-recruitment
-     *                                telegrams in milliseconds. Defaults to
-     *                                60000.
-     * @param recruitTgDelayMillis The delay before recruitment telegrams in
-     *                             milliseconds. Defaults to 180000.
-     * @param requestCacheEnabled Whether or not certain API requests
-     *                            should be temporarily cached. Defaults to
-     *                            true.
-     * @param requestCacheValiditySecs The number of seconds that a request
-     *                                 should stay cached. Defaults to 900.
-     * @param allowImmediateRequests Allows API requests immediately after the
-     *                               API is initialized without delay.
+     *                                telegram requests in milliseconds.
+     *                                Defaults to 60000.
+     * @param recruitTgDelayMillis The delay before recruitment telegram
+     *                             requests in milliseconds. Defaults to
+     *                             180000.
+     * @param cacheApiRequests Whether API requests should be cached.
+     *                         Defaults to true.
+     * @param cacheTime The number of seconds that API requests should stay
+     *                  cached. Defaults to 900.
+     * @param allowImmediateApiRequests Allows API requests immediately after
+     *                                  the API is initialized.
      * @param allowImmediateTgRequests Allows telegram requests immediately
-     *                                 after the API is initialized without
-     *                                 delay.
+     *                                 after the API is initialized.
      */
     constructor(userAgent: string,
                 delay: boolean = true,
                 apiDelayMillis: number = 600,
                 nonRecruitTgDelayMillis: number = 60000,
                 recruitTgDelayMillis: number = 180000,
-                requestCacheEnabled: boolean = true,
-                requestCacheValiditySecs: number = 900,
-                allowImmediateRequests: boolean = true,
+                cacheApiRequests: boolean = true,
+                cacheTime: number = 900,
+                allowImmediateApiRequests: boolean = true,
                 allowImmediateTgRequests: boolean = true)
     {
         this.userAgent = userAgent;
@@ -240,38 +220,38 @@ export class NsApi {
         this.nonRecruitTgDelayMillis = nonRecruitTgDelayMillis;
         this.recruitTgDelayMillis = recruitTgDelayMillis;
 
-        this._reqQueue = [];
-        if (allowImmediateRequests) {
-            this._reqLast = Date.now() - this.apiDelayMillis;
+        this._queue = [];
+        if (allowImmediateApiRequests) {
+            this._lastRequestTime = Date.now() - this.apiDelayMillis;
         } else {
-            this._reqLast = Date.now();
+            this._lastRequestTime = Date.now();
         }
         if (allowImmediateTgRequests) {
-            this._tgReqLast = Date.now() - this.recruitTgDelayMillis;
+            this._lastTgTime = Date.now() - this.recruitTgDelayMillis;
         } else {
-            this._tgReqLast = Date.now();
+            this._lastTgTime = Date.now();
         }
-        this._reqInProgress = false;
+        this._requestInProgress = false;
         if (this.delay) {
-            this._reqInterval = setInterval(() => {
-                if (this.reqInProgress
-                    || this._reqQueue.length === 0
+            this._interval = setInterval(() => {
+                if (this.requestInProgress
+                    || this._queue.length === 0
                     || this.blockExistingRequests)
                 {
                     return;
                 }
 
-                let nextReq = this._reqQueue[0];
+                let nextReq = this._queue[0];
                 let exec = false;
-                if (Date.now() - this._reqLast > this.apiDelayMillis) {
+                if (Date.now() - this._lastRequestTime > this.apiDelayMillis) {
                     if (nextReq.tg === TelegramType.Recruitment) {
-                        if (Date.now() - this._tgReqLast >
+                        if (Date.now() - this._lastTgTime >
                             this.recruitTgDelayMillis)
                         {
                             exec = true;
                         }
                     } else if (nextReq.tg === TelegramType.NonRecruitment) {
-                        if (Date.now() - this._tgReqLast >
+                        if (Date.now() - this._lastTgTime >
                             this.nonRecruitTgDelayMillis)
                         {
                             exec = true;
@@ -282,27 +262,27 @@ export class NsApi {
                 }
 
                 if (exec) {
-                    this._reqInProgress = true;
+                    this._requestInProgress = true;
                     nextReq.func();
-                    this._reqQueue.shift();
+                    this._queue.shift();
                 }
             }, 0);
         } else {
-            this._reqInterval = setInterval(() => {
-                if (this._reqQueue.length === 0
+            this._interval = setInterval(() => {
+                if (this._queue.length === 0
                     || this.blockExistingRequests)
                 {
                     return;
                 }
 
-                let nextReq = this._reqQueue.shift()!;
+                let nextReq = this._queue.shift()!;
                 nextReq.func();
             }, 0);
         }
 
-        this._reqCache = {};
-        this.requestCacheEnabled = requestCacheEnabled;
-        this.requestCacheValiditySecs = requestCacheValiditySecs;
+        this._cache = {};
+        this.cacheApiRequests = cacheApiRequests;
+        this.cacheTime = cacheTime;
 
         this.blockExistingRequests = false;
         this.blockNewRequests = false;
@@ -310,14 +290,15 @@ export class NsApi {
     }
 
     /**
-     * Gets the user agent specified in API requests.
+     * Gets a string identifying you to the NationStates API.
      */
     public get userAgent() {
         return this._userAgent;
     }
 
     /**
-     * Sets the user agent specified in API requests.
+     * Sets a string identifying you to the NationStates API. Using the name of
+     * your main nation is recommended.
      */
     public set userAgent(userAgent: string) {
         if (typeof userAgent !== "string") {
@@ -329,8 +310,7 @@ export class NsApi {
     }
 
     /**
-     * Gets a value indicating whether a delay is introduced before API and
-     * telegram requests.
+     * Gets whether a delay is introduced before API and telegram requests.
      */
     public get delay() {
         return this._delay;
@@ -352,152 +332,147 @@ export class NsApi {
     }
 
     /**
-     * Sets the delay before API requests in milliseconds.
+     * Sets the delay before API requests in milliseconds. Must be greater than
+     * or equal to 600.
      */
     public set apiDelayMillis(apiDelayMillis: number) {
         if (apiDelayMillis < 600) {
-            throw new RangeError("API delay must be greater han or equal to"
+            throw new RangeError("API delay must be greater than or equal to"
                                  + " 600");
         }
         this._apiDelayMillis = apiDelayMillis;
     }
 
     /**
-     * Gets the delay before non-recruitment telegrams in milliseconds.
+     * Gets the delay before non-recruitment telegram requests in milliseconds.
      */
     public get nonRecruitTgDelayMillis() {
         return this._nonRecruitTgDelayMillis;
     }
 
     /**
-     * Sets the delay before non-recruitment telegrams in milliseconds.
+     * Sets the delay before non-recruitment telegram requests in milliseconds.
+     * Must be greater than or equal to 60000.
      */
     public set nonRecruitTgDelayMillis(nonRecruitTgDelayMillis: number) {
         if (nonRecruitTgDelayMillis < 60000)
         {
             throw new RangeError("Non-recruitment telegram delay must be"
-                                 + " an integer greater than or equal"
-                                 + " to 60000");
+                                 + " greater than or equal to 60000");
         }
         this._nonRecruitTgDelayMillis = nonRecruitTgDelayMillis;
     }
 
     /**
-     * Gets the delay before recruitment telegrams in milliseconds.
+     * Gets the delay before recruitment telegram requests in milliseconds.
+     * Must be greater than or equal to 180000.
      */
     public get recruitTgDelayMillis() {
         return this._recruitTgDelayMillis;
     }
 
     /**
-     * Sets the delay before recruitment telegrams in milliseconds.
+     * Sets the delay before recruitment telegram requests in milliseconds.
      */
     public set recruitTgDelayMillis(recruitTgDelayMillis: number) {
         if (recruitTgDelayMillis < 180000)
         {
             throw new RangeError("Recruitment telegram delay must be"
-                                 + " an integer greater than or equal"
-                                 + " to 180000");
+                                 + " greater than or equal to 180000");
         }
         this._recruitTgDelayMillis = recruitTgDelayMillis;
     }
 
     /**
-     * Gets whether or not existing requests in the queue are blocked from being
-     * performed.
+     * Gets whether the API is blocked from performing any further requests.
      */
     public get blockExistingRequests() {
         return this._blockExistingRequests;
     }
 
     /**
-     * If set to true, blocks the API from performing any further requests. If
-     * set to false, normal operation will resume.
+     * Sets whether the API is blocked from performing any further requests.
      */
     public set blockExistingRequests(blockExistingRequests: boolean) {
         this._blockExistingRequests = blockExistingRequests;
     }
 
     /**
-     * Gets whether or not new requests are blocked from being added to the
-     * queue.
+     * Gets whether new API requests are blocked from being added to the queue.
      */
     public get blockNewRequests() {
         return this._blockNewRequests;
     }
 
     /**
-     * If set to true, prevents any new requests from being added to the queue.
-     * If set to false, normal operation will resume.
+     * Sets whether new API requests are blocked from being added to the queue.
      */
     public set blockNewRequests(blockNewRequests: boolean) {
         this._blockNewRequests = blockNewRequests;
     }
 
     /**
-     * Gets whether or not an API request is in progress.
+     * Gets whether an API request is in progress.
      */
-    public get reqInProgress() {
-        return this._reqInProgress;
+    public get requestInProgress() {
+        return this._requestInProgress;
     }
 
     /**
-     * Gets whether or not API requests are queued.
+     * Gets whether there is at least one API request in the queue.
      */
-    public get reqQueued() {
-        return this._reqQueue.length !== 0;
+    public get requestsQueued() {
+        return this._queue.length !== 0;
     }
 
     /**
-     * Cancels all requests in the API queue.
+     * Cancels all API requests in the queue.
      */
     public clearQueue(): void {
-        while (this._reqQueue.length > 0) {
-            this._reqQueue.pop()!.reject(new Error("API queue cleared"));
+        while (this._queue.length > 0) {
+            this._queue.pop()!.reject(new Error("API queue cleared"));
         }
     }
 
     /**
-     * Gets whether the URI-based API request cache is enabled.
+     * Gets whether API requests should be cached.
      */
-    public get requestCacheEnabled() {
-        return this._reqCacheEnabled;
+    public get cacheApiRequests() {
+        return this._cacheApiRequests;
     }
 
     /**
-     * Sets whether the URI-based API request cache is enabled.
+     * Sets whether API requests should be cached.
      */
-    public set requestCacheEnabled(requestCacheEnabled: boolean) {
-        this._reqCacheEnabled = requestCacheEnabled;
+    public set cacheApiRequests(cacheApiRequests: boolean) {
+        this._cacheApiRequests = cacheApiRequests;
     }
 
     /**
-     * Gets the number of seconds that entries in the request cache remain
-     * valid.
+     * Gets the number of seconds that API requests should stay cached.
      */
-    public get requestCacheValiditySecs() {
-        return this._reqCacheValiditySecs;
+    public get cacheTime() {
+        return this._cacheTime;
     }
 
     /**
-     * Gets the number of seconds that entries in the request cache remain
-     * valid. A value of 0 means that requests do not expire.
+     * Sets the number of seconds that API requests should stay cached.
      */
-    public set requestCacheValiditySecs(requestCacheValiditySecs: number) {
-        if (requestCacheValiditySecs < 0)
+    public set cacheTime(cacheTime: number) {
+        if (cacheTime <= 0)
         {
-            throw new RangeError("Request cache validity must be at least 0");
+            throw new RangeError("Cache time must be greater than 0");
         }
-        this._reqCacheValiditySecs = requestCacheValiditySecs;
+        this._cacheTime = cacheTime;
     }
 
     /**
-     * Clears the request cache.
+     * Clears the API request cache.
      */
-    public clearRequestCache(): void {
-        for (const uri in this._reqCache) {
-            if (this._reqCache.hasOwnProperty(uri)) {
-                delete this._reqCache[uri];
+    public clearCache(): void {
+        for (const uri in this._cache) {
+            if (this._cache.hasOwnProperty(uri)) {
+                delete this._cache[uri];
             }
         }
     }
@@ -509,7 +484,7 @@ export class NsApi {
      * this API instance, including requests currently in the queue.
      */
     public cleanup(): void {
-        clearInterval(this._reqInterval);
+        clearInterval(this._interval);
         this.clearQueue();
         this._cleanup = true;
     }
@@ -610,22 +585,21 @@ export class NsApi {
      *
      * @param clientKey The client key.
      * @param tgId The ID of the telegram API template.
-     * @param tgKey The secret key of the telegram API template.
+     * @param tgSecretKey The secret key of the telegram API template.
      * @param recipient The name of the recipient.
-     * @param type The type of the telegram as given by TelegramType,
-     *             used for rate limit purposes.
+     * @param type The telegram type for rate limit purposes.
      *
      * @return A promise providing confirmation from the telegram API.
      */
     public telegramRequest(clientKey: string, tgId: string,
-                           tgKey: string, recipient: string,
+                           tgSecretKey: string, recipient: string,
                            type: TelegramType): Promise<void>
     {
         return Promise.resolve().then(() => {
             let params = "a=sendTG";
             params += "&client=" + encodeURIComponent(clientKey);
             params += "&tgid=" + encodeURIComponent(tgId);
-            params += "&key=" + encodeURIComponent(tgKey);
+            params += "&key=" + encodeURIComponent(tgSecretKey);
             params += "&to=" + encodeURIComponent(NsApi.toId(recipient));
 
             return this.apiRequest(this.apiPath(params), type, undefined)
@@ -715,11 +689,11 @@ export class NsApi {
 
             const uri = this.apiPath(allParams);
 
-            if (this.requestCacheEnabled && !disableCache) {
-                if (this._reqCache.hasOwnProperty(uri)) {
-                    const entry = this._reqCache[uri];
+            if (this.cacheApiRequests && !disableCache) {
+                if (this._cache.hasOwnProperty(uri)) {
+                    const entry = this._cache[uri];
                     if ((Date.now() - entry.time) / 1000
-                        < this.requestCacheValiditySecs)
+                        < this.cacheTime)
                     {
                         return Promise.resolve(clone(entry.data));
                     }
@@ -735,9 +709,9 @@ export class NsApi {
                                        reject(err);
                                    }
 
-                                   if (this.requestCacheEnabled)
+                                   if (this.cacheApiRequests)
                                    {
-                                       this._reqCache[uri] = {
+                                       this._cache[uri] = {
                                            time: Date.now(),
                                            data
                                        };
@@ -809,10 +783,10 @@ export class NsApi {
                             data += chunk;
                         });
                         res.on("end", () => {
-                            this._reqInProgress = false;
-                            this._reqLast = Date.now();
+                            this._requestInProgress = false;
+                            this._lastRequestTime = Date.now();
                             if (tg) {
-                                this._tgReqLast = this._reqLast;
+                                this._lastTgTime = this._lastRequestTime;
                             }
 
                             if (res.statusCode === 200) {
@@ -843,13 +817,17 @@ export class NsApi {
                     }
                 ).on("error", reject);
             };
-            this._reqQueue.push({tg, func, reject});
+            this._queue.push({tg, func, reject});
         });
     }
 
     /**
      * Converts names to a fixed form: all lowercase, with spaces replaced
      * with underscores.
+     *
+     * @param name The name to convert.
+     *
+     * @return The converted name.
      */
     private static toId(name: string) {
         return name.replace("_", " ").trim().toLowerCase().replace(" ", "_");
