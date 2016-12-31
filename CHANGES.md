@@ -1,6 +1,7 @@
 ## 0.1.10 ##
 
 * Bug fixes
+* Improve error messages
 
 ## 0.1.9 ##
 

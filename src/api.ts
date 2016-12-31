@@ -388,7 +388,8 @@ export class NsApi {
      */
     public clearQueue(): void {
         while (this._queue.length > 0) {
-            this._queue.pop()!.reject(new Error("API queue cleared"));
+            this._queue.pop()!.reject(new Error(
+                "Request cancelled: clearQueue function was called"));
         }
     }
 
@@ -566,7 +567,8 @@ export class NsApi {
                                  && data.trim().toLowerCase() === "queued"))
                            {
                                throw new ApiError(
-                                   "telegram API response did not consist of"
+                                   "Telegram API request failed:"
+                                   + " response did not consist of"
                                    + " the string 'queued'", 200, data);
                            }
                        });
@@ -610,8 +612,9 @@ export class NsApi {
                                return false;
                            } else {
                                throw new ApiError(
-                                   "authentication API response did not consist"
-                                   + " of the string '1' or '0'", 200, data);
+                                   "Authentication API request failed:"
+                                   + " response did not consist of the string"
+                                   + " '1' or '0'", 200, data);
                            }
                        });
         });
@@ -761,10 +764,13 @@ export class NsApi {
     {
         return new Promise((resolve, reject) => {
             if (this.blockNewRequests) {
-                throw new Error("New API requests are being blocked");
+                throw new Error("Request blocked: blockNewRequests property is"
+                                + " set to true");
             }
             if (this._cleanup) {
-                throw new Error("API is shut down");
+                throw new Error("Request blocked: cleanup function has been"
+                                + " called and no further requests can be"
+                                + " made using this API instance");
             }
 
             let headers: any = {
@@ -820,8 +826,8 @@ export class NsApi {
                                 resolve(clone(data));
                             } else {
                                 reject(new ApiError(
-                                    `API returned HTTP response code`
-                                    + ` ${res.statusCode}`,
+                                    `Request failed: API returned HTTP`
+                                    + ` response code ${res.statusCode}`,
                                     res.statusCode,
                                     data));
                             }
