@@ -48,7 +48,7 @@ const xmlParser = new xml2js.Parser(
 /**
  * The version of nsapi.
  */
-export const VERSION = "0.1.9";
+export const VERSION = "0.1.10";
 
 /**
  * The version specified in API requests.
@@ -162,7 +162,7 @@ export class NsApi {
         func: () => void;
         reject: (err: any) => void;
     }[];
-    private readonly _interval: any;
+    private _interval: any;
     private _lastRequestTime: number;
     private _lastTgTime: number;
     private _requestInProgress: boolean;
@@ -232,53 +232,8 @@ export class NsApi {
             this._lastTgTime = Date.now();
         }
         this._requestInProgress = false;
-        if (this.delay) {
-            this._interval = setInterval(() => {
-                if (this.requestInProgress
-                    || this._queue.length === 0
-                    || this.blockExistingRequests)
-                {
-                    return;
-                }
 
-                let nextReq = this._queue[0];
-                let exec = false;
-                if (Date.now() - this._lastRequestTime > this.apiDelayMillis) {
-                    if (nextReq.tg === TelegramType.Recruitment) {
-                        if (Date.now() - this._lastTgTime >
-                            this.recruitTgDelayMillis)
-                        {
-                            exec = true;
-                        }
-                    } else if (nextReq.tg === TelegramType.NonRecruitment) {
-                        if (Date.now() - this._lastTgTime >
-                            this.nonRecruitTgDelayMillis)
-                        {
-                            exec = true;
-                        }
-                    } else {
-                        exec = true;
-                    }
-                }
-
-                if (exec) {
-                    this._requestInProgress = true;
-                    nextReq.func();
-                    this._queue.shift();
-                }
-            }, 0);
-        } else {
-            this._interval = setInterval(() => {
-                if (this._queue.length === 0
-                    || this.blockExistingRequests)
-                {
-                    return;
-                }
-
-                let nextReq = this._queue.shift()!;
-                nextReq.func();
-            }, 0);
-        }
+        this.initInterval();
 
         this._cache = {};
         this.cacheApiRequests = cacheApiRequests;
@@ -319,9 +274,12 @@ export class NsApi {
     /**
      * Sets a value indicating whether a delay is introduced before API and
      * telegram requests.
+     *
+     * Setting this value re-initializes the API scheduler.
      */
     public set delay(delay: boolean) {
         this._delay = delay;
+        this.initInterval();
     }
 
     /**
@@ -657,6 +615,60 @@ export class NsApi {
                            }
                        });
         });
+    }
+
+    /**
+     * Initializes the API scheduler.
+     */
+    private initInterval(): void {
+        clearInterval(this._interval);
+        if (this.delay) {
+            this._interval = setInterval(() => {
+                if (this.requestInProgress
+                    || this._queue.length === 0
+                    || this.blockExistingRequests)
+                {
+                    return;
+                }
+
+                let nextReq = this._queue[0];
+                let exec = false;
+                if (Date.now() - this._lastRequestTime > this.apiDelayMillis) {
+                    if (nextReq.tg === TelegramType.Recruitment) {
+                        if (Date.now() - this._lastTgTime >
+                            this.recruitTgDelayMillis)
+                        {
+                            exec = true;
+                        }
+                    } else if (nextReq.tg === TelegramType.NonRecruitment) {
+                        if (Date.now() - this._lastTgTime >
+                            this.nonRecruitTgDelayMillis)
+                        {
+                            exec = true;
+                        }
+                    } else {
+                        exec = true;
+                    }
+                }
+
+                if (exec) {
+                    this._requestInProgress = true;
+                    nextReq.func();
+                    this._queue.shift();
+                }
+            }, 0);
+        } else {
+            this._interval = setInterval(() => {
+                if (this._queue.length === 0
+                    || this.blockExistingRequests)
+                {
+                    return;
+                }
+
+                let nextReq = this._queue.shift()!;
+                nextReq.func();
+            }, 0);
+        }
     }
 
     /**
