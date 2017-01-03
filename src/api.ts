@@ -181,7 +181,7 @@ export class NsApi {
     private _cleanup: boolean;
 
     /**
-     * Initializes a new instance of the NationStatesApi class.
+     * Initializes a new instance of the NsApi class.
      *
      * @param userAgent A string identifying you to the NationStates API.
      *                  Using the name of your main nation is recommended.

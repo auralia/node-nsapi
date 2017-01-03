@@ -2,6 +2,7 @@
 
 * Bug fixes
 * Improve error messages
+* Fix documentation errors
 
 ## 0.1.9 ##
 
