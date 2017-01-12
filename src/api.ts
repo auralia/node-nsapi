@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as clone from "clone";
+import {IncomingMessage} from "http";
 import * as https from "https";
 import * as xml2js from "xml2js";
 
@@ -122,9 +123,9 @@ export class ApiError extends Error {
      */
     public message: string;
     /**
-     * The HTTP response code returned by the API.
+     * The HTTP response metadata returned by the NationStates website.
      */
-    public responseCode?: number;
+    public responseMetadata?: IncomingMessage;
     /**
      * The HTTP response text returned by the API.
      */
@@ -134,15 +135,25 @@ export class ApiError extends Error {
      * Initializes a new instance of the ApiError class.
      *
      * @param message The message associated with the error.
-     * @param responseCode The HTTP response code returned by the API.
+     * @param responseMetadata The HTTP response metadata returned by the
+     *                         NationStates website.
      * @param responseText The HTTP response text returned by the API.
      */
-    constructor(message: string, responseCode?: number, responseText?: string) {
+    constructor(message: string, responseMetadata?: IncomingMessage,
+                responseText?: string) {
         super(message);
         this.message = message;
-        this.responseCode = responseCode;
+        this.responseMetadata = responseMetadata;
         this.responseText = responseText;
     }
+}
+
+/**
+ * An HTTP response.
+ */
+interface HttpResponse {
+    metadata: IncomingMessage,
+    text: string
 }
 
 /**
@@ -560,14 +571,18 @@ export class NsApi {
             params += "&to=" + encodeURIComponent(NsApi.toId(recipient));
 
             return this.apiRequest(this.apiPath(params), type, undefined)
-                       .then((data: string) => {
-                           if (!(typeof data === "string"
-                                 && data.trim().toLowerCase() === "queued"))
+                       .then((response: HttpResponse) => {
+                           if (!(typeof response.text === "string"
+                                 && response.text
+                                            .trim()
+                                            .toLowerCase() === "queued"))
                            {
                                throw new ApiError(
                                    "Telegram API request failed:"
                                    + " response did not consist of"
-                                   + " the string 'queued'", 200, data);
+                                   + " the string 'queued'",
+                                   response.metadata,
+                                   response.text);
                            }
                        });
         });
@@ -599,20 +614,22 @@ export class NsApi {
             }
 
             return this.apiRequest(this.apiPath(params), undefined, undefined)
-                       .then((data: string) => {
-                           if (typeof data === "string"
-                               && data.trim() === "1")
+                       .then((response: HttpResponse) => {
+                           if (typeof response.text === "string"
+                               && response.text.trim() === "1")
                            {
                                return true;
-                           } else if (typeof data === "string"
-                                      && data.trim() === "0")
+                           } else if (typeof response.text === "string"
+                                      && response.text.trim() === "0")
                            {
                                return false;
                            } else {
                                throw new ApiError(
                                    "Authentication API request failed:"
                                    + " response did not consist of the string"
-                                   + " '1' or '0'", 200, data);
+                                   + " '1' or '0'",
+                                   response.metadata,
+                                   response.text);
                            }
                        });
         });
@@ -714,10 +731,10 @@ export class NsApi {
             }
 
             return this.apiRequest(uri, undefined, auth)
-                       .then((data: string) => {
+                       .then((response: HttpResponse) => {
                            return new Promise((resolve, reject) => {
-                               xmlParser.parseString(data, (err: any,
-                                                            data: any) => {
+                               xmlParser.parseString(response.text,
+                                                     (err: any, data: any) => {
                                    if (err) {
                                        reject(err);
                                    }
@@ -758,7 +775,7 @@ export class NsApi {
      * @return A promise returning the data from the NationStates API.
      */
     private apiRequest(path: string, tg: TelegramType | undefined,
-                       auth: PrivateShardsAuth | undefined): Promise<string>
+                       auth: PrivateShardsAuth | undefined): Promise<HttpResponse>
     {
         return new Promise((resolve, reject) => {
             if (this.blockNewRequests) {
@@ -793,40 +810,40 @@ export class NsApi {
                         path,
                         headers
                     },
-                    res => {
+                    response => {
                         let data = "";
-                        res.on("data", chunk => {
+                        response.on("data", chunk => {
                             data += chunk;
                         });
-                        res.on("end", () => {
+                        response.on("end", () => {
                             this._requestInProgress = false;
                             this._lastRequestTime = Date.now();
                             if (tg) {
                                 this._lastTgTime = this._lastRequestTime;
                             }
 
-                            if (res.statusCode === 200) {
+                            if (response.statusCode === 200) {
                                 if (auth) {
                                     if (auth.updateAutologin
-                                        && res.headers["x-autologin"])
+                                        && response.headers["x-autologin"])
                                     {
                                         auth.autologin =
-                                            res.headers["x-autologin"];
+                                            response.headers["x-autologin"];
                                     }
                                     if (auth.updatePin
-                                        && res.headers["x-pin"])
+                                        && response.headers["x-pin"])
                                     {
                                         auth.pin =
-                                            res.headers["x-pin"];
+                                            response.headers["x-pin"];
                                     }
                                 }
 
-                                resolve(clone(data));
+                                resolve({metadata: response, text: data});
                             } else {
                                 reject(new ApiError(
                                     `Request failed: API returned HTTP`
-                                    + ` response code ${res.statusCode}`,
-                                    res.statusCode,
+                                    + ` response code ${response.statusCode}`,
+                                    response,
                                     data));
                             }
                         });

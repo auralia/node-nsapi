@@ -1,5 +1,6 @@
 ## 0.1.10 ##
 
+* Error API changes
 * Bug fixes
 * Improve error messages
 * Fix documentation errors
