@@ -124,8 +124,12 @@ function telegramExample() {
 
     return api.telegramRequest(clientKey, telegramId, telegramSecretKey,
                                "Auralia", nsapi.TelegramType.NonRecruitment)
-              .then(() => console.log("Telegram sent"))
-              .catch(err => console.log("Telegram was not sent: " + err));
+              .then(function() {
+                  console.log("Telegram sent");
+              })
+              .catch(function(err) {
+                  console.log("Telegram was not sent: " + err);
+              });
 }
 
 function authenticationExample() {
@@ -134,7 +138,7 @@ function authenticationExample() {
     var checksum = "";
 
     return api.authenticateRequest(nation, checksum)
-              .then(success => {
+              .then(function(success) {
                   if (success) {
                       console.log("Authentication succeeded");
                   } else {
@@ -151,7 +155,7 @@ function privateShardsExample() {
     var nationName = "";
     var nationPassword = "";
 
-    let auth = {
+    var auth = {
         password: nationPassword,
         updatePin: true
     };
