@@ -27,6 +27,9 @@ source maps. There is also a `docs` target to generate documentation.
 Consult [the documentation](https://auralia.github.io/node-nsapi/) for more 
 information on API structure and methods.
 
+nsapi targets ES5 but requires support for ES6 promises, so if you're not 
+using a runtime that supports them natively, you'll have to use a polyfill.
+
 ## Examples ##
 
 The following is a simple example that retrieves a nation's full name and prints 
