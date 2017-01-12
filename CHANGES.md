@@ -3,6 +3,7 @@
 * Bug fixes
 * Improve error messages
 * Fix documentation errors
+* Remove promise polyfill
 
 ## 0.1.9 ##
 
