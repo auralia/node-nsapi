@@ -18,6 +18,9 @@ import {IncomingMessage} from "http";
 import * as https from "https";
 import * as xml2js from "xml2js";
 
+/**
+ * @hidden
+ */
 const xmlParser = new xml2js.Parser({
     charkey: "value",
     trim: true,
@@ -150,6 +153,8 @@ export class ApiError extends Error {
 
 /**
  * An HTTP response.
+ *
+ * @hidden
  */
 interface HttpResponse {
     metadata: IncomingMessage,

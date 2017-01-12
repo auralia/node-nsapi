@@ -29,6 +29,10 @@ gulp.task("clean", function() {
     return del("lib");
 });
 
+gulp.task("clean-docs", function() {
+    return del("docs");
+});
+
 var project = typescript.createProject("tsconfig.json");
 gulp.task("prod", ["clean"], function() {
     var result = project.src()
@@ -58,13 +62,14 @@ gulp.task("dev", ["clean"], function() {
                    result.dts
                          .pipe(gulp.dest("lib"))]);
 });
-gulp.task("docs", function() {
+gulp.task("docs", ["clean-docs"], function() {
     return gulp.src("src")
                .pipe(typedoc({
                                  mode: "file",
                                  module: "commonjs",
                                  out: "docs",
                                  target: "es5",
-                                 ignoreCompilerErrors: true
+                                 ignoreCompilerErrors: true,
+                                 excludePrivate: true
                              }));
 });
