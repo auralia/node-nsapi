@@ -2,7 +2,8 @@
   "compilerOptions": {
     "declaration": true,
     "lib": [
-      "es5"
+      "es5",
+      "es2015.promise"
     ],
     "module": "commonjs",
     "noFallthroughCasesInSwitch": true,

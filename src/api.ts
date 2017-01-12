@@ -14,36 +14,34 @@
  * limitations under the License.
  */
 import * as clone from "clone";
-import {Promise} from "es6-promise";
 import * as https from "https";
 import * as xml2js from "xml2js";
 
-const xmlParser = new xml2js.Parser(
-    {
-        charkey: "value",
-        trim: true,
-        normalizeTags: true,
-        normalize: true,
-        explicitRoot: false,
-        explicitArray: false,
-        mergeAttrs: true,
-        attrValueProcessors: [(value: any) => {
-            let num = Number(value);
-            if (!isNaN(num)) {
-                return num;
-            } else {
-                return value;
-            }
-        }],
-        valueProcessors: [(value: any) => {
-            let num = Number(value);
-            if (!isNaN(num)) {
-                return num;
-            } else {
-                return value;
-            }
-        }]
-    });
+const xmlParser = new xml2js.Parser({
+    charkey: "value",
+    trim: true,
+    normalizeTags: true,
+    normalize: true,
+    explicitRoot: false,
+    explicitArray: false,
+    mergeAttrs: true,
+    attrValueProcessors: [(value: any) => {
+        let num = Number(value);
+        if (!isNaN(num)) {
+            return num;
+        } else {
+            return value;
+        }
+    }],
+    valueProcessors: [(value: any) => {
+        let num = Number(value);
+        if (!isNaN(num)) {
+            return num;
+        } else {
+            return value;
+        }
+    }]
+});
 
 /**
  * The version of nsapi.
