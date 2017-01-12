@@ -101,7 +101,7 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="apierror.html#message" class="tsd-kind-icon">message</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="apierror.html#responsecode" class="tsd-kind-icon">response<wbr>Code</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="apierror.html#responsemetadata" class="tsd-kind-icon">response<wbr>Metadata</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="apierror.html#responsetext" class="tsd-kind-icon">response<wbr>Text</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="apierror.html#error" class="tsd-kind-icon">Error</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="apierror.html#message-1" class="tsd-kind-icon">message</a></li>
@@ -118,13 +118,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Api<wbr>Error<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, responseCode<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, responseText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="apierror.html" class="tsd-signature-type">ApiError</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Api<wbr>Error<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, responseMetadata<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IncomingMessage</span>, responseText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="apierror.html" class="tsd-signature-type">ApiError</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:131</li>
+									<li>Defined in api.ts:132</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -143,10 +143,11 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> responseCode: <span class="tsd-signature-type">number</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> responseMetadata: <span class="tsd-signature-type">IncomingMessage</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>The HTTP response code returned by the API.</p>
+											<p>The HTTP response metadata returned by the
+											NationStates website.</p>
 										</div>
 									</div>
 								</li>
@@ -172,7 +173,7 @@
 					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:123</li>
+							<li>Defined in api.ts:124</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -182,17 +183,17 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="responsecode" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> response<wbr>Code</h3>
-					<div class="tsd-signature tsd-kind-icon">response<wbr>Code<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="responsemetadata" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> response<wbr>Metadata</h3>
+					<div class="tsd-signature tsd-kind-icon">response<wbr>Metadata<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">IncomingMessage</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:127</li>
+							<li>Defined in api.ts:128</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The HTTP response code returned by the API.</p>
+							<p>The HTTP response metadata returned by the NationStates website.</p>
 						</div>
 					</div>
 				</section>
@@ -202,7 +203,7 @@
 					<div class="tsd-signature tsd-kind-icon">response<wbr>Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:131</li>
+							<li>Defined in api.ts:132</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -284,7 +285,7 @@
 								<a href="apierror.html#message" class="tsd-kind-icon">message</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="apierror.html#responsecode" class="tsd-kind-icon">response<wbr>Code</a>
+								<a href="apierror.html#responsemetadata" class="tsd-kind-icon">response<wbr>Metadata</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="apierror.html#responsetext" class="tsd-kind-icon">response<wbr>Text</a>
@@ -307,6 +308,9 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="nsapi.html" class="tsd-kind-icon">Ns<wbr>Api</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-is-not-exported">
+						<a href="../interfaces/httpresponse.html" class="tsd-kind-icon">Http<wbr>Response</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/privateshardsauth.html" class="tsd-kind-icon">Private<wbr>Shards<wbr>Auth</a>
