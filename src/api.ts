@@ -50,7 +50,7 @@ const xmlParser = new xml2js.Parser({
 /**
  * The version of nsapi.
  */
-export const VERSION = "0.1.10";
+export const VERSION = "0.1.11";
 
 /**
  * The version specified in API requests.
@@ -143,7 +143,8 @@ export class ApiError extends Error {
      * @param responseText The HTTP response text returned by the API.
      */
     constructor(message: string, responseMetadata?: IncomingMessage,
-                responseText?: string) {
+                responseText?: string)
+    {
         super(message);
         this.message = message;
         this.responseMetadata = responseMetadata;
@@ -475,15 +476,13 @@ export class NsApi {
      *
      * @return A promise providing data from the API.
      */
-    public nationRequest(nation: string, shards: string[] = [],
-                         extraParams: {[name: string]: string} = {},
-                         auth?: PrivateShardsAuth,
-                         disableCache: boolean = false): Promise<any>
+    public async nationRequest(nation: string, shards: string[] = [],
+                               extraParams: {[name: string]: string} = {},
+                               auth?: PrivateShardsAuth,
+                               disableCache: boolean = false): Promise<any>
     {
-        return Promise.resolve().then(() => {
-            extraParams["nation"] = NsApi.toId(nation);
-            return this.xmlRequest(shards, extraParams, auth, disableCache);
-        });
+        extraParams["nation"] = NsApi.toId(nation);
+        return await this.xmlRequest(shards, extraParams, auth, disableCache);
     }
 
     /**
@@ -498,15 +497,14 @@ export class NsApi {
      *
      * @return A promise providing data from the API.
      */
-    public regionRequest(region: string, shards: string[] = [],
-                         extraParams: {[name: string]: string} = {},
-                         disableCache: boolean = false): Promise<any>
+    public async regionRequest(region: string, shards: string[] = [],
+                               extraParams: {[name: string]: string} = {},
+                               disableCache: boolean = false): Promise<any>
     {
-        return Promise.resolve().then(() => {
-            extraParams["region"] = NsApi.toId(region);
-            return this.xmlRequest(shards, extraParams, undefined,
-                                   disableCache);
-        });
+
+        extraParams["region"] = NsApi.toId(region);
+        return await this.xmlRequest(shards, extraParams, undefined,
+                                     disableCache);
     }
 
     /**
@@ -520,11 +518,12 @@ export class NsApi {
      *
      * @return A promise providing data from the API.
      */
-    public worldRequest(shards: string[] = [],
-                        extraParams: {[name: string]: string} = {},
-                        disableCache: boolean = false): Promise<any>
+    public async worldRequest(shards: string[] = [],
+                              extraParams: {[name: string]: string} = {},
+                              disableCache: boolean = false): Promise<any>
     {
-        return this.xmlRequest(shards, extraParams, undefined, disableCache);
+        return await this.xmlRequest(shards, extraParams, undefined,
+                                     disableCache);
     }
 
     /**
@@ -539,16 +538,14 @@ export class NsApi {
      *
      * @return A promise providing data from the API.
      */
-    public worldAssemblyRequest(council: WorldAssemblyCouncil,
-                                shards: string[] = [],
-                                extraParams: {[name: string]: string} = {},
-                                disableCache: boolean = false): Promise<any>
+    public async worldAssemblyRequest(council: WorldAssemblyCouncil,
+                                      shards: string[] = [],
+                                      extraParams: {[name: string]: string} = {},
+                                      disableCache: boolean = false): Promise<any>
     {
-        return Promise.resolve().then(() => {
-            extraParams["wa"] = String(council);
-            return this.xmlRequest(shards, extraParams, undefined,
-                                   disableCache);
-        });
+        extraParams["wa"] = String(council);
+        return await this.xmlRequest(shards, extraParams, undefined,
+                                     disableCache);
     }
 
     /**
@@ -564,33 +561,30 @@ export class NsApi {
      *
      * @return A promise providing confirmation from the telegram API.
      */
-    public telegramRequest(clientKey: string, tgId: string,
-                           tgSecretKey: string, recipient: string,
-                           type: TelegramType): Promise<void>
+    public async telegramRequest(clientKey: string, tgId: string,
+                                 tgSecretKey: string, recipient: string,
+                                 type: TelegramType): Promise<void>
     {
-        return Promise.resolve().then(() => {
-            let params = "a=sendTG";
-            params += "&client=" + encodeURIComponent(clientKey);
-            params += "&tgid=" + encodeURIComponent(tgId);
-            params += "&key=" + encodeURIComponent(tgSecretKey);
-            params += "&to=" + encodeURIComponent(NsApi.toId(recipient));
+        let params = "a=sendTG";
+        params += "&client=" + encodeURIComponent(clientKey);
+        params += "&tgid=" + encodeURIComponent(tgId);
+        params += "&key=" + encodeURIComponent(tgSecretKey);
+        params += "&to=" + encodeURIComponent(NsApi.toId(recipient));
 
-            return this.apiRequest(this.apiPath(params), type, undefined)
-                       .then((response: HttpResponse) => {
-                           if (!(typeof response.text === "string"
-                                 && response.text
-                                            .trim()
-                                            .toLowerCase() === "queued"))
-                           {
-                               throw new ApiError(
-                                   "Telegram API request failed:"
-                                   + " response did not consist of"
-                                   + " the string 'queued'",
-                                   response.metadata,
-                                   response.text);
-                           }
-                       });
-        });
+        const response = await this.apiRequest(this.apiPath(params), type,
+                                               undefined);
+        if (!(typeof response.text === "string"
+              && response.text
+                         .trim()
+                         .toLowerCase() === "queued"))
+        {
+            throw new ApiError(
+                "Telegram API request failed:"
+                + " response did not consist of"
+                + " the string 'queued'",
+                response.metadata,
+                response.text);
+        }
     }
 
     /**
@@ -607,37 +601,34 @@ export class NsApi {
      * @return A promise returning true if authenticated or false if not
      *         authenticated.
      */
-    public authenticateRequest(nation: string, checksum: string,
-                               token?: string): Promise<boolean>
+    public async authenticateRequest(nation: string, checksum: string,
+                                     token?: string): Promise<boolean>
     {
-        return Promise.resolve().then(() => {
-            let params = "a=verify";
-            params += "&nation=" + encodeURIComponent(NsApi.toId(nation));
-            params += "&checksum=" + encodeURIComponent(checksum);
-            if (token) {
-                params += "&token=" + encodeURIComponent(token);
-            }
+        let params = "a=verify";
+        params += "&nation=" + encodeURIComponent(NsApi.toId(nation));
+        params += "&checksum=" + encodeURIComponent(checksum);
+        if (token) {
+            params += "&token=" + encodeURIComponent(token);
+        }
 
-            return this.apiRequest(this.apiPath(params), undefined, undefined)
-                       .then((response: HttpResponse) => {
-                           if (typeof response.text === "string"
-                               && response.text.trim() === "1")
-                           {
-                               return true;
-                           } else if (typeof response.text === "string"
-                                      && response.text.trim() === "0")
-                           {
-                               return false;
-                           } else {
-                               throw new ApiError(
-                                   "Authentication API request failed:"
-                                   + " response did not consist of the string"
-                                   + " '1' or '0'",
-                                   response.metadata,
-                                   response.text);
-                           }
-                       });
-        });
+        const response = await this.apiRequest(this.apiPath(params), undefined,
+                                               undefined);
+        if (typeof response.text === "string"
+            && response.text.trim() === "1")
+        {
+            return true;
+        } else if (typeof response.text === "string"
+                   && response.text.trim() === "0")
+        {
+            return false;
+        } else {
+            throw new ApiError(
+                "Authentication API request failed:"
+                + " response did not consist of the string"
+                + " '1' or '0'",
+                response.metadata,
+                response.text);
+        }
     }
 
     /**
@@ -706,56 +697,62 @@ export class NsApi {
      *
      * @return A promise returning the data from the NationStates API.
      */
-    private xmlRequest(shards: string[], params: {[name: string]: string},
-                       auth: PrivateShardsAuth | undefined,
-                       disableCache: boolean): Promise<any>
+    private async xmlRequest(shards: string[], params: {[name: string]: string},
+                             auth: PrivateShardsAuth | undefined,
+                             disableCache: boolean): Promise<any>
     {
-        return Promise.resolve().then(() => {
-            let allParams = "";
-            allParams += "q=" + shards.sort()
-                                      .map(item => encodeURIComponent(item))
-                                      .join("+") + "&";
-            const paramKeys = Object.keys(params).sort();
-            for (const param of paramKeys) {
-                allParams += encodeURIComponent(param) + "="
-                             + encodeURIComponent(params[param]) + "&";
-            }
-            allParams += "v=" + API_VERSION;
+        let allParams = "";
+        allParams += "q=" + shards.sort()
+                                  .map(item => encodeURIComponent(item))
+                                  .join("+") + "&";
+        const paramKeys = Object.keys(params).sort();
+        for (const param of paramKeys) {
+            allParams += encodeURIComponent(param) + "="
+                         + encodeURIComponent(params[param]) + "&";
+        }
+        allParams += "v=" + API_VERSION;
 
-            const uri = this.apiPath(allParams);
+        const uri = this.apiPath(allParams);
 
-            if (this.cacheApiRequests && !disableCache) {
-                if (this._cache.hasOwnProperty(uri)) {
-                    const entry = this._cache[uri];
-                    if ((Date.now() - entry.time) / 1000
-                        < this.cacheTime)
-                    {
-                        return Promise.resolve(clone(entry.data));
-                    }
+        if (this.cacheApiRequests && !disableCache) {
+            if (this._cache.hasOwnProperty(uri)) {
+                const entry = this._cache[uri];
+                if ((Date.now() - entry.time) / 1000
+                    < this.cacheTime)
+                {
+                    return clone(entry.data);
                 }
             }
+        }
 
-            return this.apiRequest(uri, undefined, auth)
-                       .then((response: HttpResponse) => {
-                           return new Promise((resolve, reject) => {
-                               xmlParser.parseString(response.text,
-                                                     (err: any, data: any) => {
-                                   if (err) {
-                                       reject(err);
-                                   }
+        const response = await this.apiRequest(uri, undefined, auth);
+        const json = await this.parseXml(response.text);
 
-                                   if (this.cacheApiRequests)
-                                   {
-                                       this._cache[uri] = {
-                                           time: Date.now(),
-                                           data
-                                       };
-                                   }
+        if (this.cacheApiRequests)
+        {
+            this._cache[uri] =
+                {
+                    time: Date.now(),
+                    data: json
+                };
+        }
+        return json;
+    }
 
-                                   resolve(data);
-                               });
-                           });
-                       });
+    /**
+     * Parses XML into a JSON object.
+     *
+     * @param text The XML to parse.
+     * @return A promise returning a JSON object.
+     */
+    private parseXml(text: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            xmlParser.parseString(text, (err: any, data: any) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(data);
+            });
         });
     }
 
