@@ -1,3 +1,7 @@
+## 0.1.12 ##
+
+* Bug fixes
+
 ## 0.1.11 ##
 
 * Switch to async/await

@@ -50,7 +50,7 @@ const xmlParser = new xml2js.Parser({
 /**
  * The version of nsapi.
  */
-export const VERSION = "0.1.11";
+export const VERSION = "0.1.12";
 
 /**
  * The version specified in API requests.
@@ -808,6 +808,7 @@ export class NsApi {
             const func = () => {
                 https.get(
                     {
+                        protocol: "https:",
                         host: "www.nationstates.net",
                         path,
                         headers
