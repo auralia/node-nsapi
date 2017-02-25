@@ -23,7 +23,7 @@ var sourcemaps = require("gulp-sourcemaps");
 var typedoc = require("gulp-typedoc");
 var typescript = require("gulp-typescript");
 
-gulp.task("default", ["prod"]);
+gulp.task("default", ["prod", "docs"]);
 
 gulp.task("clean", function() {
     return del("lib");
@@ -62,14 +62,13 @@ gulp.task("dev", ["clean"], function() {
                    result.dts
                          .pipe(gulp.dest("lib"))]);
 });
-gulp.task("docs", ["clean-docs"], function() {
+gulp.task("docs", ["clean-docs", "prod"], function() {
     return gulp.src("src")
                .pipe(typedoc({
                                  mode: "file",
                                  module: "commonjs",
                                  out: "docs",
                                  target: "es5",
-                                 ignoreCompilerErrors: true,
-                                 excludePrivate: true
+                                 ignoreCompilerErrors: true
                              }));
 });
