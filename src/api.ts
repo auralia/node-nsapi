@@ -50,7 +50,7 @@ const xmlParser = new xml2js.Parser({
 /**
  * The version of nsapi.
  */
-export const VERSION = "0.1.12";
+export const VERSION = "0.1.13";
 
 /**
  * The version specified in API requests.
@@ -795,13 +795,13 @@ export class NsApi {
             };
             if (auth) {
                 if (auth.pin) {
-                    headers["Pin"] = auth.pin;
+                    headers["X-Pin"] = auth.pin;
                 }
                 if (auth.autologin) {
-                    headers["Autologin"] = auth.autologin;
+                    headers["X-Autologin"] = auth.autologin;
                 }
                 if (auth.password) {
-                    headers["Password"] = auth.password;
+                    headers["X-Password"] = auth.password;
                 }
             }
 
