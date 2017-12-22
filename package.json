@@ -1,6 +1,6 @@
 {
   "name": "nsapi",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Provides access to the NationStates API",
   "keywords": [
     "NationStates",
@@ -26,20 +26,20 @@
     "url": "git://github.com/auralia/node-nsapi.git"
   },
   "devDependencies": {
-    "del": "^2.2.2",
+    "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^2.4.1",
-    "gulp-typedoc": "^2.0.2",
-    "gulp-typescript": "^3.1.5",
-    "merge2": "^1.0.3",
-    "typedoc": "^0.5.7",
-    "typescript": "^2.2.1"
+    "gulp-sourcemaps": "^2.6.2",
+    "gulp-typedoc": "^2.1.1",
+    "gulp-typescript": "^3.2.3",
+    "merge2": "^1.2.0",
+    "typedoc": "^0.9.0",
+    "typescript": "^2.6.2"
   },
   "dependencies": {
     "@types/clone": "^0.1.30",
-    "@types/node": "^7.0.5",
-    "@types/xml2js": "0.0.32",
-    "clone": "^2.1.0",
-    "xml2js": "^0.4.17"
+    "@types/node": "^8.5.2",
+    "@types/xml2js": "0.4.2",
+    "clone": "^2.1.1",
+    "xml2js": "^0.4.19"
   }
 }

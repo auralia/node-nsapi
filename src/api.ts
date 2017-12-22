@@ -22,35 +22,35 @@ import * as xml2js from "xml2js";
  * @hidden
  */
 const xmlParser = new xml2js.Parser({
-    charkey: "value",
-    trim: true,
-    normalizeTags: true,
-    normalize: true,
-    explicitRoot: false,
-    explicitArray: false,
-    mergeAttrs: true,
-    attrValueProcessors: [(value: any) => {
-        let num = Number(value);
-        if (!isNaN(num)) {
-            return num;
-        } else {
-            return value;
-        }
-    }],
-    valueProcessors: [(value: any) => {
-        let num = Number(value);
-        if (!isNaN(num)) {
-            return num;
-        } else {
-            return value;
-        }
-    }]
-});
+                                        charkey: "value",
+                                        trim: true,
+                                        normalizeTags: true,
+                                        normalize: true,
+                                        explicitRoot: false,
+                                        explicitArray: false,
+                                        mergeAttrs: true,
+                                        attrValueProcessors: [(value: any) => {
+                                            let num = Number(value);
+                                            if (!isNaN(num)) {
+                                                return num;
+                                            } else {
+                                                return value;
+                                            }
+                                        }],
+                                        valueProcessors: [(value: any) => {
+                                            let num = Number(value);
+                                            if (!isNaN(num)) {
+                                                return num;
+                                            } else {
+                                                return value;
+                                            }
+                                        }]
+                                    });
 
 /**
  * The version of nsapi.
  */
-export const VERSION = "0.1.13";
+export const VERSION = "0.1.14";
 
 /**
  * The version specified in API requests.
@@ -272,8 +272,8 @@ export class NsApi {
      */
     public set userAgent(userAgent: string) {
         if (typeof userAgent !== "string") {
-            throw new Error("A valid user agent must be defined in order to"
-                            + " use the NationStates API");
+            throw new Error("A valid user agent must be defined in"
+                            + " order to use the NationStates API");
         }
         this._userAgent = `node-nsapi ${VERSION} (maintained by Auralia,`
                           + ` currently used by "${userAgent}")`;
@@ -310,8 +310,8 @@ export class NsApi {
      */
     public set apiDelayMillis(apiDelayMillis: number) {
         if (apiDelayMillis < 600) {
-            throw new RangeError("API delay must be greater than or equal to"
-                                 + " 600");
+            throw new RangeError("API delay must be greater than or"
+                                 + " equal to 600");
         }
         this._apiDelayMillis = apiDelayMillis;
     }
@@ -330,8 +330,8 @@ export class NsApi {
     public set nonRecruitTgDelayMillis(nonRecruitTgDelayMillis: number) {
         if (nonRecruitTgDelayMillis < 60000)
         {
-            throw new RangeError("Non-recruitment telegram delay must be"
-                                 + " greater than or equal to 60000");
+            throw new RangeError("Non-recruitment telegram delay must"
+                                 + " be greater than or equal to 60000");
         }
         this._nonRecruitTgDelayMillis = nonRecruitTgDelayMillis;
     }
@@ -477,7 +477,7 @@ export class NsApi {
      * @return A promise providing data from the API.
      */
     public async nationRequest(nation: string, shards: string[] = [],
-                               extraParams: {[name: string]: string} = {},
+                               extraParams: { [name: string]: string } = {},
                                auth?: PrivateShardsAuth,
                                disableCache: boolean = false): Promise<any>
     {
@@ -498,7 +498,7 @@ export class NsApi {
      * @return A promise providing data from the API.
      */
     public async regionRequest(region: string, shards: string[] = [],
-                               extraParams: {[name: string]: string} = {},
+                               extraParams: { [name: string]: string } = {},
                                disableCache: boolean = false): Promise<any>
     {
 
@@ -519,7 +519,7 @@ export class NsApi {
      * @return A promise providing data from the API.
      */
     public async worldRequest(shards: string[] = [],
-                              extraParams: {[name: string]: string} = {},
+                              extraParams: { [name: string]: string } = {},
                               disableCache: boolean = false): Promise<any>
     {
         return await this.xmlRequest(shards, extraParams, undefined,
@@ -540,7 +540,7 @@ export class NsApi {
      */
     public async worldAssemblyRequest(council: WorldAssemblyCouncil,
                                       shards: string[] = [],
-                                      extraParams: {[name: string]: string} = {},
+                                      extraParams: { [name: string]: string } = {},
                                       disableCache: boolean = false): Promise<any>
     {
         extraParams["wa"] = String(council);
@@ -611,7 +611,8 @@ export class NsApi {
             params += "&token=" + encodeURIComponent(token);
         }
 
-        const response = await this.apiRequest(this.apiPath(params), undefined,
+        const response = await this.apiRequest(this.apiPath(params),
+                                               undefined,
                                                undefined);
         if (typeof response.text === "string"
             && response.text.trim() === "1")
@@ -697,7 +698,8 @@ export class NsApi {
      *
      * @return A promise returning the data from the NationStates API.
      */
-    private async xmlRequest(shards: string[], params: {[name: string]: string},
+    private async xmlRequest(shards: string[],
+                             params: { [name: string]: string },
                              auth: PrivateShardsAuth | undefined,
                              disableCache: boolean): Promise<any>
     {
@@ -776,17 +778,18 @@ export class NsApi {
      *
      * @return A promise returning the data from the NationStates API.
      */
-    private apiRequest(path: string, tg: TelegramType | undefined,
+    private apiRequest(path: string,
+                       tg: TelegramType | undefined,
                        auth: PrivateShardsAuth | undefined): Promise<HttpResponse>
     {
         return new Promise((resolve, reject) => {
             if (this.blockNewRequests) {
-                throw new Error("Request blocked: blockNewRequests property is"
-                                + " set to true");
+                throw new Error("Request blocked: blockNewRequests"
+                                + " property is set to true");
             }
             if (this._cleanup) {
-                throw new Error("Request blocked: cleanup function has been"
-                                + " called and no further requests can be"
+                throw new Error("Request blocked: cleanup function has"
+                                + " been called and no further requests can be"
                                 + " made using this API instance");
             }
 
@@ -813,9 +816,9 @@ export class NsApi {
                         path,
                         headers
                     },
-                    response => {
+                    (response: IncomingMessage) => {
                         let data = "";
-                        response.on("data", chunk => {
+                        response.on("data", (chunk: string) => {
                             data += chunk;
                         });
                         response.on("end", () => {
@@ -830,14 +833,22 @@ export class NsApi {
                                     if (auth.updateAutologin
                                         && response.headers["x-autologin"])
                                     {
-                                        auth.autologin =
+                                        let autologin =
                                             response.headers["x-autologin"];
+                                        if (autologin instanceof Array) {
+                                            autologin = autologin[0];
+                                        }
+                                        auth.autologin = autologin;
                                     }
                                     if (auth.updatePin
                                         && response.headers["x-pin"])
                                     {
-                                        auth.pin =
+                                        let pin =
                                             response.headers["x-pin"];
+                                        if (pin instanceof Array) {
+                                            pin = pin[0];
+                                        }
+                                        auth.pin = pin;
                                     }
                                 }
 
@@ -866,6 +877,9 @@ export class NsApi {
      * @return The converted name.
      */
     private static toId(name: string) {
-        return name.replace("_", " ").trim().toLowerCase().replace(" ", "_");
+        return name.replace("_", " ")
+                   .trim()
+                   .toLowerCase()
+                   .replace(" ", "_");
     }
 }
