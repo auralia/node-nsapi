@@ -50,7 +50,7 @@ const xmlParser = new xml2js.Parser({
 /**
  * The version of nsapi.
  */
-export const VERSION = "0.1.14";
+export const VERSION = "0.1.15";
 
 /**
  * The version specified in API requests.
@@ -824,7 +824,7 @@ export class NsApi {
                         response.on("end", () => {
                             this._requestInProgress = false;
                             this._lastRequestTime = Date.now();
-                            if (tg) {
+                            if (typeof tg !== "undefined") {
                                 this._lastTgTime = this._lastRequestTime;
                             }
 
