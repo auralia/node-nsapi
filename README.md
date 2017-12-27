@@ -36,17 +36,17 @@ The following is a simple example that retrieves a nation's full name and prints
 it to the console.
 
 ```js
-var nsapi = require("nsapi");
+const { NsApi } = require("nsapi");
 
 // TODO: Replace the user agent with your own
-var api = new nsapi.NsApi("Your nation's name");
+const api = new NsApi("Your nation's name");
 return api.nationRequest("Auralia", ["fullname"])
-          .then(function(data) {
-              console.log(data["fullname"]);
-          })
-          .then(function() {
-              api.cleanup();
-          });
+  .then(data => {
+    console.log(data.fullname);
+  })
+  .then(() => {
+    api.cleanup();
+  });
 ```
 
 For additional examples, consult the examples/example.js file.

@@ -214,23 +214,25 @@ export class NsApi {
      *
      * @param userAgent A string identifying you to the NationStates API.
      *                  Using the name of your main nation is recommended.
-     * @param delay Whether a delay is introduced before API and telegram
+     * @param options An object containing all options for the API.
+     *
+     * @param options.delay Whether a delay is introduced before API and telegram
      *              requests. Defaults to true.
-     * @param apiDelayMillis The delay before API requests in milliseconds.
+     * @param options.apiDelayMillis The delay before API requests in milliseconds.
      *                       Defaults to 600.
-     * @param nonRecruitTgDelayMillis The delay before non-recruitment
+     * @param options.nonRecruitTgDelayMillis The delay before non-recruitment
      *                                telegram requests in milliseconds.
      *                                Defaults to 60000.
-     * @param recruitTgDelayMillis The delay before recruitment telegram
+     * @param options.recruitTgDelayMillis The delay before recruitment telegram
      *                             requests in milliseconds. Defaults to
      *                             180000.
-     * @param cacheApiRequests Whether API requests should be cached.
+     * @param options.cacheApiRequests Whether API requests should be cached.
      *                         Defaults to true.
-     * @param cacheTime The number of seconds that API requests should stay
+     * @param options.cacheTime The number of seconds that API requests should stay
      *                  cached. Defaults to 900.
-     * @param allowImmediateApiRequests Allows API requests immediately after
+     * @param options.allowImmediateApiRequests Allows API requests immediately after
      *                                  the API is initialized.
-     * @param allowImmediateTgRequests Allows telegram requests immediately
+     * @param options.allowImmediateTgRequests Allows telegram requests immediately
      *                                 after the API is initialized.
      */
     constructor(userAgent: string,
