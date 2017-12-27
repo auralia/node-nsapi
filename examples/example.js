@@ -14,46 +14,36 @@
  * limitations under the License.
  */
 
-const { NsApi, WorldAssemblyCouncil, TelegramType } = require("../lib/api.js");
+var nsapi = require("../lib/api.js");
 
-/**
- * TODO: Replace the user agent with your own
- */
-const api = new NsApi("Your nation's name");
+// TODO: Replace the user agent with your own
+var api = new nsapi.NsApi("Your nation's name");
 
-/**
- * The following is a simple example that retrieves the nation Auralia's full
- * name and prints it to the console.
- */
+// The following is a simple example that retrieves the nation Auralia's full
+// name and prints it to the console.
 function nationApiExample() {
     return api.nationRequest("Auralia", ["fullname"])
-        .then(data => {
-            console.log(data.fullname);
+        .then(function(data) {
+            console.log(data["fullname"]);
         });
 }
 
-/**
- * The following is the same example as example 1, but notice how it completes
- * much faster because the previous request was cached!
- */
+// The following is the same example as example 1, but notice how it completes
+// much faster because the previous request was cached!
 function cacheExample() {
     return nationApiExample();
 }
 
-/**
- * The following example retrieves the delegate, founder, and list of nations
- * in the region of Catholic.
- */
+// The following example retrieves the delegate, founder, and list of nations
+// in the region of Catholic.
 function regionApiExample() {
     return api.regionRequest("Catholic", ["nations", "delegate", "founder"])
-        .then(data => {
-            console.log(`
-Region of Catholic
-
-Delegate: ${data.delegate}
-Founder: ${data.founder}
-Nations: ${data.ntaions.split(":")}
-            `);
+        .then(function(data) {
+            console.log("Region of Catholic");
+            console.log();
+            console.log("Delegate: " + data["delegate"]);
+            console.log("Founder: " + data["founder"]);
+            console.log("Nations: " + data["nations"].split(":"));
         });
 }
 
@@ -61,13 +51,13 @@ Nations: ${data.ntaions.split(":")}
 function worldApiExample() {
     return api.worldRequest(["happenings"],
         { filter: "founding", limit: "5" })
-        .then(data => {
-            for (const event of data.happenings.event) {
-                console.log(`
-Event ID: ${event.id}
-Event Timestamp: ${event.timestamp}
-Event Text: ${event.text}
-                `);
+        .then(function(data) {
+            for (var i = 0; i < data["happenings"]["event"].length; i++) {
+                var event = data["happenings"]["event"][i];
+                console.log();
+                console.log("Event ID: " + event["id"]);
+                console.log("Event Timestamp: " + event["timestamp"]);
+                console.log("Event Text: " + event["text"]);
             }
         });
 }
@@ -75,10 +65,10 @@ Event Text: ${event.text}
 // The following example retrieves information about the last Security Council
 // resolution at vote.
 function worldAssemblyApiExample() {
-    return api.worldAssemblyRequest(WorldAssemblyCouncil.SecurityCouncil,
+    return api.worldAssemblyRequest(nsapi.WorldAssemblyCouncil.SecurityCouncil,
         ["lastresolution"])
-        .then(data => {
-            console.log(data.lastresolution);
+        .then(function(data) {
+            console.log(data["lastresolution"]);
         });
 }
 
@@ -87,35 +77,39 @@ function worldAssemblyApiExample() {
 // list to the console.
 function complexExample() {
     return api.regionRequest("Catholic", ["nations"])
-        .then(data => {
-            const nations = data.nations.split(":");
+        .then(function(data) {
+            var nations = data["nations"].split(":");
 
-            return Promise.all(nations.map(nation => {
+            return Promise.all(nations.map(function(nation) {
                 return api.nationRequest(
                     nation,
                     ["name", "censusscore-65"]
-                ).then(data => {
-                    console.log(`Retrieved information for ${data.name}`);
+                ).then(function(data) {
+                    console.log(
+                        "Retrieved information for " + data["name"]
+                              + ".");
                     return {
-                        nation: data.name,
-                        influence: data.censusscore.value
+                        nation: data["name"],
+                        influence: data["censusscore"]["value"]
                     };
                 });
             }));
         })
-        .then(influence => {
-            influence.sort((a, b) => {
-                return b.influence - a.influence;
+        .then(function(influence) {
+            influence.sort(function(a, b) {
+                return b["influence"] - a["influence"];
             });
 
-            console.log(`\n${rightpad("Nation", 50)} Influence"`);
-            for (let i = 0; i < influence.length; i++) { // eslint-disable-line id-length
-                console.log(`${rightpad(influence[i].nation, 50)} ${influence[i].influence}`);
+            console.log("\n" + rightpad("Nation", 50) + " Influence");
+            for (var i = 0; i < influence.length; i++) {
+                console.log(rightpad(influence[i].nation, 50) + " "
+                                  + influence[i].influence);
             }
         });
+
     function rightpad(str, num) {
-        const len = str.length;
-        for (let id = 0; id < num - len; id++) {
+        var len = str.length;
+        for (var i = 0; i < num - len; i++) {
             str += " ";
         }
         return str;
@@ -123,28 +117,28 @@ function complexExample() {
 }
 
 function telegramExample() {
-    /** Replace telegram details with your own */
-    const clientKey = "";
-    const telegramId = "";
-    const telegramSecretKey = "";
+    // TODO: Replace telegram details with your own
+    var clientKey = "";
+    var telegramId = "";
+    var telegramSecretKey = "";
 
     return api.telegramRequest(clientKey, telegramId, telegramSecretKey,
-        "Auralia", TelegramType.NonRecruitment)
-        .then(() => {
+        "Auralia", nsapi.TelegramType.NonRecruitment)
+        .then(function() {
             console.log("Telegram sent");
         })
-        .catch(err => {
-            console.log("Telegram was not sent", err);
+        .catch(function(err) {
+            console.error("Telegram was not sent: ", err);
         });
 }
 
 function authenticationExample() {
-    /** Replace nation name and checksum with your own */
-    const nation = "";
-    const checksum = "";
+    // TODO: Replace nation name and checksum with your own
+    var nation = "";
+    var checksum = "";
 
     return api.authenticateRequest(nation, checksum)
-        .then(success => {
+        .then(function(success) {
             if (success) {
                 console.log("Authentication succeeded");
             } else {
@@ -157,11 +151,11 @@ function authenticationExample() {
 // and print it to the console, along with the PIN required for future private
 // shard requests.
 function privateShardsExample() {
-    /** Replace the nation name and password with your own */
-    const nationName = "";
-    const nationPassword = "";
+    // TODO: Replace the nation name and password with your own
+    var nationName = "";
+    var nationPassword = "";
 
-    const auth = {
+    var auth = {
         password: nationPassword,
         updatePin: true
     };
@@ -170,36 +164,53 @@ function privateShardsExample() {
         ["nextissuetime"],
         undefined,
         auth)
-        .then(data => {
-            console.log(`
-Next issue time: ${data.nextissuetime}
-PIN: ${auth.pin}
-`);
+        .then(function(data) {
+            console.log("Next issue time: " + data["nextissuetime"]);
+            console.log("PIN: " + auth.pin);
         });
 }
 
 // The following code executes each example.
-const functions = [
-    console.log("Nation API Example"),
-    nationApiExample(),
-    console.log("Cache Example"),
-    cacheExample(),
-    console.log("Region API Example"),
-    regionApiExample(),
-    console.log("World API Example"),
-    worldApiExample(),
-    console.log("World Assembly API Example"),
-    worldAssemblyApiExample(),
-    console.log("Complex Example"),
-    complexExample(),
-    console.log("Telegram Example"),
-    telegramExample(),
-    console.log("Authentication Example"),
-    authenticationExample(),
-    console.log("Private Shards Example"),
-    privateShardsExample()
-];
-Promise.all(functions)
-    .then(() => {
+Promise.resolve()
+    .then(function() {
+        console.log("Nation API example:\n");
+        return nationApiExample();
+    })
+    .then(function() {
+        console.log("\nCache example:\n");
+        return cacheExample();
+    })
+    .then(function() {
+        console.log("\nRegion API example:\n");
+        return regionApiExample();
+    })
+    .then(function() {
+        console.log("\nWorld API example:");
+        return worldApiExample();
+    })
+    .then(function() {
+        console.log("\nWorld Assembly API example:\n");
+        return worldAssemblyApiExample();
+    })
+    .then(function() {
+        console.log("\nComplex example:\n");
+        return complexExample();
+    })
+    .then(function() {
+        console.log("\nTelegram example:\n");
+        return telegramExample();
+    })
+    .then(function() {
+        console.log("\nAuthentication example:\n");
+        return authenticationExample();
+    })
+    .then(function() {
+        console.log("\nPrivate shards example:\n");
+        return privateShardsExample();
+    })
+    .catch(function(err) {
+        console.error(err);
+    })
+    .then(function() {
         api.cleanup();
     });
