@@ -1,0 +1,36 @@
+{
+	"extends": [
+		"tslint:latest"
+	],
+	"rules": {
+		"array-type": [true, "array"],
+		"object-literal-key-quotes": [true, "as-needed"],
+		"quotemark": [true, "double"],
+		"indent": [true, "spaces"],
+		"radix": false,
+		"curly": [true, "ignore-same-line"],
+		"one-line":[false],
+		"variable-name": [
+			true, 
+			"ban-keywords",
+			"allow-leading-underscore",
+			"check-format"
+		],
+		"interface-name": [false],
+		"interface-over-type-literal": false,
+		"no-var-requires": false,
+		"typedef": [
+			true,
+			"arrow-parameter",
+			"call-signature",
+			"member-variable-declaration",
+			"parameter",
+			"property-declaration", 
+			"variable-declaration"
+		],
+		"object-literal-sort-keys": true,
+		"trailing-comma": [false],
+		"max-classes-per-file": [false, 5],
+		"arrow-parens": [false]
+	}
+}
