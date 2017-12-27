@@ -21,7 +21,7 @@ import * as xml2js from "xml2js";
 /**
  * @hidden
  */
-const xmlParser = new xml2js.Parser({
+const xmlParser: xml2js.Parser = new xml2js.Parser({
                                         charkey: "value",
                                         trim: true,
                                         normalizeTags: true,
@@ -30,7 +30,7 @@ const xmlParser = new xml2js.Parser({
                                         explicitArray: false,
                                         mergeAttrs: true,
                                         attrValueProcessors: [(value: any) => {
-                                            let num = Number(value);
+                                            const num: number = Number(value);
                                             if (!isNaN(num)) {
                                                 return num;
                                             } else {
@@ -38,7 +38,7 @@ const xmlParser = new xml2js.Parser({
                                             }
                                         }],
                                         valueProcessors: [(value: any) => {
-                                            let num = Number(value);
+                                            const num: number = Number(value);
                                             if (!isNaN(num)) {
                                                 return num;
                                             } else {
@@ -50,12 +50,12 @@ const xmlParser = new xml2js.Parser({
 /**
  * The version of nsapi.
  */
-export const VERSION = "0.1.15";
+export const VERSION: string = "0.1.15";
 
 /**
  * The version specified in API requests.
  */
-export const API_VERSION = 9;
+export const API_VERSION: number = 9;
 
 /**
  * The council specified in World Assembly API requests.
@@ -158,14 +158,28 @@ export class ApiError extends Error {
  * @hidden
  */
 interface HttpResponse {
-    metadata: IncomingMessage,
-    text: string
+    metadata: IncomingMessage;
+    text: string;
 }
 
 /**
  * Provides access to the NationStates API.
  */
 export class NsApi {
+    /**
+     * Converts names to a fixed form: all lowercase, with spaces replaced
+     * with underscores.
+     *
+     * @param name The name to convert.
+     *
+     * @return The converted name.
+     */
+    private static toId(name: string): string {
+        return name.replace("_", " ")
+                   .trim()
+                   .toLowerCase()
+                   .replace(" ", "_");
+    }
     private _userAgent: string;
     private _delay: boolean;
     private _apiDelayMillis: number;
@@ -220,39 +234,33 @@ export class NsApi {
      *                                 after the API is initialized.
      */
     constructor(userAgent: string,
-                delay: boolean = true,
-                apiDelayMillis: number = 600,
-                nonRecruitTgDelayMillis: number = 60000,
-                recruitTgDelayMillis: number = 180000,
-                cacheApiRequests: boolean = true,
-                cacheTime: number = 900,
-                allowImmediateApiRequests: boolean = true,
-                allowImmediateTgRequests: boolean = true)
+                options: any = {
+                    delay: true,
+                    apiDelayMillis: 600,
+                    nonRecruitTgDelayMillis: 60000,
+                    recruitTgDelayMillis: 180000,
+                    cacheApiRequests: true,
+                    cacheTime: 900,
+                    allowImmediateApiRequests: true,
+                    allowImmediateTgRequests: true,
+                })
     {
         this.userAgent = userAgent;
-        this.delay = delay;
-        this.apiDelayMillis = apiDelayMillis;
-        this.nonRecruitTgDelayMillis = nonRecruitTgDelayMillis;
-        this.recruitTgDelayMillis = recruitTgDelayMillis;
+        this.delay = options.delay;
+        this.apiDelayMillis = options.apiDelayMillis;
+        this.nonRecruitTgDelayMillis = options.nonRecruitTgDelayMillis;
+        this.recruitTgDelayMillis = options.recruitTgDelayMillis;
 
         this._queue = [];
-        if (allowImmediateApiRequests) {
-            this._lastRequestTime = Date.now() - this.apiDelayMillis;
-        } else {
-            this._lastRequestTime = Date.now();
-        }
-        if (allowImmediateTgRequests) {
-            this._lastTgTime = Date.now() - this.recruitTgDelayMillis;
-        } else {
-            this._lastTgTime = Date.now();
-        }
+        this._lastRequestTime = options.allowImmediateApiRequests ? Date.now() - this.apiDelayMillis : Date.now();
+        this._lastTgTime = options.allowImmediateTgRequests ? Date.now() - this.recruitTgDelayMillis : Date.now();
         this._requestInProgress = false;
 
         this.initInterval();
 
         this._cache = {};
-        this.cacheApiRequests = cacheApiRequests;
-        this.cacheTime = cacheTime;
+        this.cacheApiRequests = options.cacheApiRequests;
+        this.cacheTime = options.cacheTime;
 
         this.blockExistingRequests = false;
         this.blockNewRequests = false;
@@ -262,7 +270,7 @@ export class NsApi {
     /**
      * Gets a string identifying you to the NationStates API.
      */
-    public get userAgent() {
+    public get userAgent(): string {
         return this._userAgent;
     }
 
@@ -282,7 +290,7 @@ export class NsApi {
     /**
      * Gets whether a delay is introduced before API and telegram requests.
      */
-    public get delay() {
+    public get delay(): boolean {
         return this._delay;
     }
 
@@ -300,7 +308,7 @@ export class NsApi {
     /**
      * Gets the delay before API requests in milliseconds.
      */
-    public get apiDelayMillis() {
+    public get apiDelayMillis(): number {
         return this._apiDelayMillis;
     }
 
@@ -319,7 +327,7 @@ export class NsApi {
     /**
      * Gets the delay before non-recruitment telegram requests in milliseconds.
      */
-    public get nonRecruitTgDelayMillis() {
+    public get nonRecruitTgDelayMillis(): number {
         return this._nonRecruitTgDelayMillis;
     }
 
@@ -340,7 +348,7 @@ export class NsApi {
      * Gets the delay before recruitment telegram requests in milliseconds.
      * Must be greater than or equal to 180000.
      */
-    public get recruitTgDelayMillis() {
+    public get recruitTgDelayMillis(): number {
         return this._recruitTgDelayMillis;
     }
 
@@ -359,7 +367,7 @@ export class NsApi {
     /**
      * Gets whether the API is blocked from performing any further requests.
      */
-    public get blockExistingRequests() {
+    public get blockExistingRequests(): boolean {
         return this._blockExistingRequests;
     }
 
@@ -373,7 +381,7 @@ export class NsApi {
     /**
      * Gets whether new API requests are blocked from being added to the queue.
      */
-    public get blockNewRequests() {
+    public get blockNewRequests(): boolean {
         return this._blockNewRequests;
     }
 
@@ -387,14 +395,14 @@ export class NsApi {
     /**
      * Gets whether an API request is in progress.
      */
-    public get requestInProgress() {
+    public get requestInProgress(): boolean {
         return this._requestInProgress;
     }
 
     /**
      * Gets whether there is at least one API request in the queue.
      */
-    public get requestsQueued() {
+    public get requestsQueued(): boolean {
         return this._queue.length !== 0;
     }
 
@@ -411,7 +419,7 @@ export class NsApi {
     /**
      * Gets whether API requests should be cached.
      */
-    public get cacheApiRequests() {
+    public get cacheApiRequests(): boolean {
         return this._cacheApiRequests;
     }
 
@@ -425,7 +433,7 @@ export class NsApi {
     /**
      * Gets the number of seconds that API requests should stay cached.
      */
-    public get cacheTime() {
+    public get cacheTime(): number {
         return this._cacheTime;
     }
 
@@ -481,8 +489,8 @@ export class NsApi {
                                auth?: PrivateShardsAuth,
                                disableCache: boolean = false): Promise<any>
     {
-        extraParams["nation"] = NsApi.toId(nation);
-        return await this.xmlRequest(shards, extraParams, auth, disableCache);
+        extraParams.nation = NsApi.toId(nation);
+        return this.xmlRequest(shards, extraParams, auth, disableCache);
     }
 
     /**
@@ -502,8 +510,8 @@ export class NsApi {
                                disableCache: boolean = false): Promise<any>
     {
 
-        extraParams["region"] = NsApi.toId(region);
-        return await this.xmlRequest(shards, extraParams, undefined,
+        extraParams.region = NsApi.toId(region);
+        return this.xmlRequest(shards, extraParams, undefined,
                                      disableCache);
     }
 
@@ -522,7 +530,7 @@ export class NsApi {
                               extraParams: { [name: string]: string } = {},
                               disableCache: boolean = false): Promise<any>
     {
-        return await this.xmlRequest(shards, extraParams, undefined,
+        return this.xmlRequest(shards, extraParams, undefined,
                                      disableCache);
     }
 
@@ -543,8 +551,8 @@ export class NsApi {
                                       extraParams: { [name: string]: string } = {},
                                       disableCache: boolean = false): Promise<any>
     {
-        extraParams["wa"] = String(council);
-        return await this.xmlRequest(shards, extraParams, undefined,
+        extraParams.wa = String(council);
+        return this.xmlRequest(shards, extraParams, undefined,
                                      disableCache);
     }
 
@@ -565,13 +573,13 @@ export class NsApi {
                                  tgSecretKey: string, recipient: string,
                                  type: TelegramType): Promise<void>
     {
-        let params = "a=sendTG";
+        let params: string = "a=sendTG";
         params += "&client=" + encodeURIComponent(clientKey);
         params += "&tgid=" + encodeURIComponent(tgId);
         params += "&key=" + encodeURIComponent(tgSecretKey);
         params += "&to=" + encodeURIComponent(NsApi.toId(recipient));
 
-        const response = await this.apiRequest(this.apiPath(params), type,
+        const response: HttpResponse = await this.apiRequest(this.apiPath(params), type,
                                                undefined);
         if (!(typeof response.text === "string"
               && response.text
@@ -604,14 +612,14 @@ export class NsApi {
     public async authenticateRequest(nation: string, checksum: string,
                                      token?: string): Promise<boolean>
     {
-        let params = "a=verify";
+        let params: string = "a=verify";
         params += "&nation=" + encodeURIComponent(NsApi.toId(nation));
         params += "&checksum=" + encodeURIComponent(checksum);
         if (token) {
             params += "&token=" + encodeURIComponent(token);
         }
 
-        const response = await this.apiRequest(this.apiPath(params),
+        const response: HttpResponse = await this.apiRequest(this.apiPath(params),
                                                undefined,
                                                undefined);
         if (typeof response.text === "string"
@@ -646,8 +654,8 @@ export class NsApi {
                     return;
                 }
 
-                let nextReq = this._queue[0];
-                let exec = false;
+                const nextReq: any = this._queue[0];
+                let exec: boolean = false;
                 if (Date.now() - this._lastRequestTime > this.apiDelayMillis) {
                     if (nextReq.tg === TelegramType.Recruitment) {
                         if (Date.now() - this._lastTgTime >
@@ -680,7 +688,7 @@ export class NsApi {
                     return;
                 }
 
-                let nextReq = this._queue.shift()!;
+                const nextReq: any = this._queue.shift()!;
                 nextReq.func();
             }, 0);
         }
@@ -703,22 +711,22 @@ export class NsApi {
                              auth: PrivateShardsAuth | undefined,
                              disableCache: boolean): Promise<any>
     {
-        let allParams = "";
+        let allParams: string = "";
         allParams += "q=" + shards.sort()
-                                  .map(item => encodeURIComponent(item))
+                                  .map((item: string) => encodeURIComponent(item))
                                   .join("+") + "&";
-        const paramKeys = Object.keys(params).sort();
+        const paramKeys: string[] = Object.keys(params).sort();
         for (const param of paramKeys) {
             allParams += encodeURIComponent(param) + "="
                          + encodeURIComponent(params[param]) + "&";
         }
         allParams += "v=" + API_VERSION;
 
-        const uri = this.apiPath(allParams);
+        const uri: string = this.apiPath(allParams);
 
         if (this.cacheApiRequests && !disableCache) {
             if (this._cache.hasOwnProperty(uri)) {
-                const entry = this._cache[uri];
+                const entry: any = this._cache[uri];
                 if ((Date.now() - entry.time) / 1000
                     < this.cacheTime)
                 {
@@ -727,8 +735,8 @@ export class NsApi {
             }
         }
 
-        const response = await this.apiRequest(uri, undefined, auth);
-        const json = await this.parseXml(response.text);
+        const response: HttpResponse = await this.apiRequest(uri, undefined, auth);
+        const json: HttpResponse = await this.parseXml(response.text);
 
         if (this.cacheApiRequests)
         {
@@ -748,7 +756,7 @@ export class NsApi {
      * @return A promise returning a JSON object.
      */
     private parseXml(text: string): Promise<any> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve: any, reject: any) => {
             xmlParser.parseString(text, (err: any, data: any) => {
                 if (err) {
                     return reject(err);
@@ -762,7 +770,7 @@ export class NsApi {
      * Creates a NationStates API path from a set of parameters.
      */
     private apiPath(params: string): string {
-        let path = "/cgi-bin/api.cgi?userAgent="
+        let path: string = "/cgi-bin/api.cgi?userAgent="
                    + encodeURIComponent(this.userAgent);
         path += "&" + params;
         return path;
@@ -782,7 +790,7 @@ export class NsApi {
                        tg: TelegramType | undefined,
                        auth: PrivateShardsAuth | undefined): Promise<HttpResponse>
     {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve: any, reject: any) => {
             if (this.blockNewRequests) {
                 throw new Error("Request blocked: blockNewRequests"
                                 + " property is set to true");
@@ -793,7 +801,7 @@ export class NsApi {
                                 + " made using this API instance");
             }
 
-            let headers: any = {
+            const headers: any = {
                 "User-Agent": this.userAgent
             };
             if (auth) {
@@ -808,7 +816,7 @@ export class NsApi {
                 }
             }
 
-            const func = () => {
+            const func: () => void = () => {
                 https.get(
                     {
                         protocol: "https:",
@@ -817,7 +825,7 @@ export class NsApi {
                         headers
                     },
                     (response: IncomingMessage) => {
-                        let data = "";
+                        let data: string = "";
                         response.on("data", (chunk: string) => {
                             data += chunk;
                         });
@@ -833,7 +841,7 @@ export class NsApi {
                                     if (auth.updateAutologin
                                         && response.headers["x-autologin"])
                                     {
-                                        let autologin =
+                                        let autologin: string | string[] | undefined =
                                             response.headers["x-autologin"];
                                         if (autologin instanceof Array) {
                                             autologin = autologin[0];
@@ -843,7 +851,7 @@ export class NsApi {
                                     if (auth.updatePin
                                         && response.headers["x-pin"])
                                     {
-                                        let pin =
+                                        let pin: string | string[] | undefined =
                                             response.headers["x-pin"];
                                         if (pin instanceof Array) {
                                             pin = pin[0];
@@ -866,20 +874,5 @@ export class NsApi {
             };
             this._queue.push({tg, func, reject});
         });
-    }
-
-    /**
-     * Converts names to a fixed form: all lowercase, with spaces replaced
-     * with underscores.
-     *
-     * @param name The name to convert.
-     *
-     * @return The converted name.
-     */
-    private static toId(name: string) {
-        return name.replace("_", " ")
-                   .trim()
-                   .toLowerCase()
-                   .replace(" ", "_");
     }
 }
