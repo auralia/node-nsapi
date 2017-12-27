@@ -23,7 +23,7 @@
     "package.json",
     "README.md"
   ],
-  "main": "./src/api.js",
+  "main": "./src/api.ts",
   "typings": "./src/api",
   "repository": {
     "type": "git",
