@@ -520,10 +520,10 @@ export class NsApi {
      */
     public async worldRequest(shards: string[] = [],
                               extraParams: { [name: string]: string } = {},
+                              auth?: PrivateShardsAuth,
                               disableCache: boolean = false): Promise<any>
     {
-        return await this.xmlRequest(shards, extraParams, undefined,
-                                     disableCache);
+        return await this.xmlRequest(shards, extraParams, auth, disableCache);
     }
 
     /**
