@@ -1,24 +1,20 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "esModuleInterop": true,
     "lib": [
-      "es5",
-      "es2015.promise"
+      "ES5",
+      "ES2015.Promise"
     ],
-    "module": "commonjs",
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "module": "CommonJS",
+    "outDir": "lib",
     "strict": true,
-    "target": "es5",
-    "types": [
-      "node"
-    ]
+    "target": "ES5"
   },
-  "include": [
-    "src/*"
+  "exclude": [
+    "docs",
+    "examples",
+    "lib",
+    "node_modules"
   ]
 }

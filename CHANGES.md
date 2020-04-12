@@ -1,3 +1,7 @@
+## 0.2.0 ##
+
+* Support API version 10
+
 ## 0.1.15 ##
 
 * Bug fixes

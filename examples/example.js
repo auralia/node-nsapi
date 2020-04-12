@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016-2017 Auralia
+ * Copyright (C) 2016-2020 Auralia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,46 @@ function worldAssemblyApiExample() {
                                     ["lastresolution"])
               .then(function(data) {
                   console.log(data["lastresolution"]);
+              });
+}
+
+// The following example retrieves information about the markets for the
+// season 1 Auralia card.
+function tradingCardApiExample() {
+    return api.worldRequest(["card", "markets"], {cardid: "1463", season: "1"})
+              .then(function(data) {
+                  console.log("Card ID: " + data["cardid"]);
+                  console.log("Category: " + data["category"]);
+                  console.log("Market value: " + data["market_value"]);
+                  console.log("Markets:");
+                  for (var i = 0; i < data["markets"]["market"].length; i++) {
+                      var market = data["markets"]["market"][i];
+                      console.log();
+                      console.log("  Nation: " + market["nation"]);
+                      console.log("  Price: " + market["price"]);
+                      console.log("  Timestamp: " + market["timestamp"]);
+                      console.log("  Type: " + market["type"]);
+                  }
+              });
+}
+
+// The following example retrieves information about Auralia's collection of
+// administrator nations.
+function tradingCardsApiExample() {
+    return api.worldRequest(["cards", "collection"], {collectionid: "76"})
+              .then(function(data) {
+                  var collection = data["collection"];
+                  console.log("Name: " + collection["name"]);
+                  console.log("Nation: " + collection["nation"]);
+                  console.log("Updated: " + collection["updated"]);
+                  console.log("Cards:");
+                  for (var i = 0; i < collection["deck"]["card"].length; i++) {
+                      var card = collection["deck"]["card"][i];
+                      console.log();
+                      console.log("  Card ID: " + card["cardid"]);
+                      console.log("  Category: " + card["category"]);
+                      console.log("  Season: " + card["season"]);
+                  }
               });
 }
 
@@ -170,6 +210,33 @@ function privateShardsExample() {
               });
 }
 
+// The following example uses nation commands to create a sample dispatch.
+function nationCommandsExample() {
+    // TODO: Replace the nation name and password with your own
+    var nationName = "";
+    var nationPassword = "";
+
+    var auth = {
+        password: nationPassword,
+        updatePin: true
+    };
+    return api.nationCommandRequest(auth,
+                                    nationName,
+                                    "dispatch",
+                                    {
+                                        dispatch: "add",
+                                        title: "nsapi test dispatch",
+                                        text: "This is a nsapi test dispatch.",
+                                        category: "1",
+                                        subcategory: "105"
+                                    },
+                                    true)
+              .then(function(data) {
+                  console.log(data);
+                  console.log("PIN: " + auth.pin);
+              });
+}
+
 // The following code executes each example.
 Promise.resolve()
        .then(function() {
@@ -193,6 +260,14 @@ Promise.resolve()
            return worldAssemblyApiExample();
        })
        .then(function() {
+           console.log("\nTrading card API example:\n");
+           return tradingCardApiExample();
+       })
+       .then(function() {
+           console.log("\nTrading cards API example:\n");
+           return tradingCardsApiExample();
+       })
+       .then(function() {
            console.log("\nComplex example:\n");
            return complexExample();
        })
@@ -207,6 +282,10 @@ Promise.resolve()
        .then(function() {
            console.log("\nPrivate shards example:\n");
            return privateShardsExample();
+       })
+       .then(function() {
+           console.log("\Nation commands example:\n");
+           return nationCommandsExample();
        })
        .catch(function(err) {
            console.log(err);

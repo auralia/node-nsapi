@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016-2017 Auralia
+ * Copyright (C) 2016-2020 Auralia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,55 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as clone from "clone";
+
 import {IncomingMessage} from "http";
-import * as https from "https";
-import * as xml2js from "xml2js";
+import clone from "clone";
+import https from "https";
+import xml2js from "xml2js";
 
 /**
  * @hidden
  */
 const xmlParser = new xml2js.Parser({
-                                        charkey: "value",
-                                        trim: true,
-                                        normalizeTags: true,
-                                        normalize: true,
-                                        explicitRoot: false,
-                                        explicitArray: false,
-                                        mergeAttrs: true,
-                                        attrValueProcessors: [(value: any) => {
-                                            let num = Number(value);
-                                            if (!isNaN(num)) {
-                                                return num;
-                                            } else {
-                                                return value;
-                                            }
-                                        }],
-                                        valueProcessors: [(value: any) => {
-                                            let num = Number(value);
-                                            if (!isNaN(num)) {
-                                                return num;
-                                            } else {
-                                                return value;
-                                            }
-                                        }]
-                                    });
+    charkey: "value",
+    trim: true,
+    normalizeTags: true,
+    normalize: true,
+    explicitRoot: false,
+    explicitArray: false,
+    mergeAttrs: true,
+    attrValueProcessors: [(value: any) => {
+        let num = Number(value);
+        if (!isNaN(num)) {
+            return num;
+        } else {
+            return value;
+        }
+    }],
+    valueProcessors: [(value: any) => {
+        let num = Number(value);
+        if (!isNaN(num)) {
+            return num;
+        } else {
+            return value;
+        }
+    }]
+});
 
 /**
  * The version of nsapi.
  */
-export const VERSION = "0.1.15";
+export const VERSION = "0.2.0";
 
 /**
  * The version specified in API requests.
  */
-export const API_VERSION = 9;
+export const API_VERSION = 10;
 
 /**
  * The council specified in World Assembly API requests.
  */
 export enum WorldAssemblyCouncil {
+    /**
+     * General Assembly.
+     */
     GeneralAssembly = 1,
+    /**
+     * Security Council.
+     */
     SecurityCouncil = 2
 }
 
@@ -70,16 +77,23 @@ export enum WorldAssemblyCouncil {
  * stricter rate limit than non-recruitment telegrams.
  */
 export enum TelegramType {
+    /**
+     * Recruitment telegrams.
+     */
     Recruitment,
+    /**
+     * Non-recruitment telegrams.
+     */
     NonRecruitment
 }
 
 /**
- * Used to authenticate with the nation API in order to use private shards.
- * Private shards provide access to information that is only available to
- * logged-in nations.
+ * Used to authenticate with the nation API in order to use private shards or
+ * nation commands. Private shards provide access to information that is only
+ * available to logged-in nations, while nation commands allow nations to
+ * perform actions that require being logged-in.
  */
-export interface PrivateShardsAuth {
+export interface Auth {
     /**
      * The password of the nation specified in the nation API request. This
      * only needs to be provided if a PIN or autologin string is not specified.
@@ -163,100 +177,124 @@ interface HttpResponse {
 }
 
 /**
+ * Options to configure nsapi.
+ */
+export interface NsApiOptions {
+    /**
+     * Whether a delay is introduced before API and telegram requests. Defaults
+     * to true.
+     */
+    delay?: boolean;
+    /**
+     * The delay before API requests in milliseconds. Defaults to 600.
+     */
+    apiDelayMillis?: number;
+    /**
+     * The delay before non-recruitment telegram requests in milliseconds.
+     * Defaults to 60000.
+     */
+    nonRecruitTgDelayMillis?: number;
+    /**
+     * The delay before recruitment telegram requests in milliseconds. Defaults
+     * to 180000.
+     */
+    recruitTgDelayMillis?: number;
+    /**
+     * Whether API requests should be cached. Defaults to true.
+     */
+    cacheApiRequests?: boolean;
+    /**
+     * The number of seconds that API requests should stay cached. Defaults to
+     * 900.
+     */
+    cacheTime?: number;
+    /**
+     * Allows API requests immediately after the API is initialized. Defaults to
+     * true.
+     */
+    allowImmediateApiRequests?: boolean;
+    /**
+     * Allows telegram requests immediately after the API is initialized.
+     * Defaults to true.
+     */
+    allowImmediateTgRequests?: boolean;
+}
+
+/**
  * Provides access to the NationStates API.
  */
 export class NsApi {
-    private _userAgent: string;
-    private _delay: boolean;
-    private _apiDelayMillis: number;
-    private _recruitTgDelayMillis: number;
-    private _nonRecruitTgDelayMillis: number;
+    private _userAgent: string = "";
+    private _delay: boolean = true;
+    private _apiDelayMillis: number = 600;
+    private _recruitTgDelayMillis: number = 60000;
+    private _nonRecruitTgDelayMillis: number = 180000;
 
     private readonly _queue: {
         tg: TelegramType | undefined;
         func: () => void;
         reject: (err: any) => void;
-    }[];
+    }[] = [];
     private _interval: any;
     private _lastRequestTime: number;
     private _lastTgTime: number;
-    private _requestInProgress: boolean;
+    private _requestInProgress: boolean = false;
 
-    private _cacheApiRequests: boolean;
+    private _cacheApiRequests: boolean = true;
     private readonly _cache: {
         [url: string]: {
             time: number,
             data: any
         }
-    };
-    private _cacheTime: number;
+    } = {};
+    private _cacheTime: number = 900;
 
-    private _blockExistingRequests: boolean;
-    private _blockNewRequests: boolean;
-    private _cleanup: boolean;
+    private _blockExistingRequests: boolean = false;
+    private _blockNewRequests: boolean = false;
+    private _cleanup: boolean = false;
 
     /**
      * Initializes a new instance of the NsApi class.
      *
      * @param userAgent A string identifying you to the NationStates API.
      *                  Using the name of your main nation is recommended.
-     * @param delay Whether a delay is introduced before API and telegram
-     *              requests. Defaults to true.
-     * @param apiDelayMillis The delay before API requests in milliseconds.
-     *                       Defaults to 600.
-     * @param nonRecruitTgDelayMillis The delay before non-recruitment
-     *                                telegram requests in milliseconds.
-     *                                Defaults to 60000.
-     * @param recruitTgDelayMillis The delay before recruitment telegram
-     *                             requests in milliseconds. Defaults to
-     *                             180000.
-     * @param cacheApiRequests Whether API requests should be cached.
-     *                         Defaults to true.
-     * @param cacheTime The number of seconds that API requests should stay
-     *                  cached. Defaults to 900.
-     * @param allowImmediateApiRequests Allows API requests immediately after
-     *                                  the API is initialized.
-     * @param allowImmediateTgRequests Allows telegram requests immediately
-     *                                 after the API is initialized.
+     * @param options Other options.
      */
-    constructor(userAgent: string,
-                delay: boolean = true,
-                apiDelayMillis: number = 600,
-                nonRecruitTgDelayMillis: number = 60000,
-                recruitTgDelayMillis: number = 180000,
-                cacheApiRequests: boolean = true,
-                cacheTime: number = 900,
-                allowImmediateApiRequests: boolean = true,
-                allowImmediateTgRequests: boolean = true)
-    {
+    constructor(userAgent: string, options: NsApiOptions) {
         this.userAgent = userAgent;
-        this.delay = delay;
-        this.apiDelayMillis = apiDelayMillis;
-        this.nonRecruitTgDelayMillis = nonRecruitTgDelayMillis;
-        this.recruitTgDelayMillis = recruitTgDelayMillis;
+        if (options.delay !== undefined) {
+            this.delay = options.delay;
+        }
+        if (options.apiDelayMillis !== undefined) {
+            this.apiDelayMillis = options.apiDelayMillis;
+        }
+        if (options.nonRecruitTgDelayMillis !== undefined) {
+            this.nonRecruitTgDelayMillis = options.nonRecruitTgDelayMillis;
+        }
+        if (options.recruitTgDelayMillis !== undefined) {
+            this.recruitTgDelayMillis = options.recruitTgDelayMillis;
+        }
 
-        this._queue = [];
-        if (allowImmediateApiRequests) {
+        if (options.allowImmediateApiRequests !== false) {
             this._lastRequestTime = Date.now() - this.apiDelayMillis;
         } else {
             this._lastRequestTime = Date.now();
         }
-        if (allowImmediateTgRequests) {
+        if (options.allowImmediateApiRequests !== false) {
             this._lastTgTime = Date.now() - this.recruitTgDelayMillis;
         } else {
             this._lastTgTime = Date.now();
         }
-        this._requestInProgress = false;
 
         this.initInterval();
 
         this._cache = {};
-        this.cacheApiRequests = cacheApiRequests;
-        this.cacheTime = cacheTime;
-
-        this.blockExistingRequests = false;
-        this.blockNewRequests = false;
-        this._cleanup = false;
+        if (options.cacheApiRequests !== undefined) {
+            this.cacheApiRequests = options.cacheApiRequests;
+        }
+        if (options.cacheTime !== undefined) {
+            this.cacheTime = options.cacheTime;
+        }
     }
 
     /**
@@ -469,20 +507,69 @@ export class NsApi {
      * @param nation The name of the nation to request data for.
      * @param shards An array of nation API shards. No shards will be specified
      *               if left undefined.
-     * @param extraParams Additional shard-specific parameters.
+     * @param shardParams Additional shard-specific parameters.
      * @param auth Authentication information for private shards.
      * @param disableCache If the request cache is enabled, disable it for
      *                     this request.
      *
      * @return A promise providing data from the API.
      */
-    public async nationRequest(nation: string, shards: string[] = [],
-                               extraParams: { [name: string]: string } = {},
-                               auth?: PrivateShardsAuth,
-                               disableCache: boolean = false): Promise<any>
+    public async nationRequest(
+        nation: string,
+        shards: string[] = [],
+        shardParams: { [paramName: string]: string } = {},
+        auth?: Auth,
+        disableCache: boolean = false): Promise<any>
     {
-        extraParams["nation"] = NsApi.toId(nation);
-        return await this.xmlRequest(shards, extraParams, auth, disableCache);
+        const globalParams = {"nation": NsApi.toId(nation)};
+        return await this.xmlRequest(shards, shardParams, globalParams,
+                                     auth, disableCache);
+    }
+
+    /**
+     * Executes a NationStates nation command. Even if request caching is
+     * enabled, these requests are never cached.
+     *
+     * @param auth Authentication information for private shards.
+     * @param nation The name of the nation to execute a command for.
+     * @param command The command to execute.
+     * @param commandParams Additional command-specific parameters.
+     * @param requiresPrepare Whether this command requires a prepare.
+     *
+     * @return A promise providing data from the API.
+     */
+    public async nationCommandRequest(
+        auth: Auth,
+        nation: string,
+        command: string,
+        commandParams: { [name: string]: string } = {},
+        requiresPrepare: boolean = true): Promise<any>
+    {
+        if (requiresPrepare && auth.updatePin !== true
+            && auth.pin === undefined)
+        {
+            throw new ApiError(
+                "When executing a nation command that requires a prepare,"
+                + " either auth.pin must be set or auth.updatePin must be"
+                + " true");
+        }
+
+        commandParams["nation"] = NsApi.toId(nation);
+        commandParams["c"] = command;
+        if (requiresPrepare) {
+            commandParams["mode"] = "prepare";
+            const prepareResponse = await this.xmlRequest(
+                [], {}, commandParams, auth, true);
+            if ("success" in prepareResponse) {
+                commandParams["mode"] = "execute";
+                commandParams["token"] = prepareResponse["success"];
+                return await this.xmlRequest([], {}, commandParams, auth, true);
+            } else {
+                return prepareResponse;
+            }
+        } else {
+            return await this.xmlRequest([], {}, commandParams, auth, true);
+        }
     }
 
     /**
@@ -491,38 +578,43 @@ export class NsApi {
      * @param region The name of the region to request data for.
      * @param shards An array of region API shards. No shards will be specified
      *               if left undefined.
-     * @param extraParams Additional shard-specific parameters.
+     * @param shardParams Additional shard-specific parameters.
      * @param disableCache If the request cache is enabled, disable it for
      *                     this request.
      *
      * @return A promise providing data from the API.
      */
-    public async regionRequest(region: string, shards: string[] = [],
-                               extraParams: { [name: string]: string } = {},
-                               disableCache: boolean = false): Promise<any>
+    public async regionRequest(
+        region: string,
+        shards: string[] = [],
+        shardParams: { [paramName: string]: string } = {},
+        disableCache: boolean = false): Promise<any>
     {
-
-        extraParams["region"] = NsApi.toId(region);
-        return await this.xmlRequest(shards, extraParams, undefined,
-                                     disableCache);
+        const globalParams = {"region": NsApi.toId(region)};
+        return await this.xmlRequest(shards, shardParams, globalParams,
+                                     undefined, disableCache);
     }
 
     /**
      * Requests data from the NationStates world API.
      *
-     * @param shards An array of world API shards. No shards will be specified
-     *               if left undefined.
-     * @param extraParams Additional shard-specific parameters.
+     * This API can also be used to request information from the trading cards
+     * API if the "card" or "cards" shard is supplied.
+     *
+     * @param shards An array of world or trading card API shards. No shards
+     *               will be specified if left undefined.
+     * @param shardParams Additional shard-specific parameters.
      * @param disableCache If the request cache is enabled, disable it for
      *                     this request.
      *
      * @return A promise providing data from the API.
      */
-    public async worldRequest(shards: string[] = [],
-                              extraParams: { [name: string]: string } = {},
-                              disableCache: boolean = false): Promise<any>
+    public async worldRequest(
+        shards: string[] = [],
+        shardParams: { [paramName: string]: string } = {},
+        disableCache: boolean = false): Promise<any>
     {
-        return await this.xmlRequest(shards, extraParams, undefined,
+        return await this.xmlRequest(shards, shardParams, {}, undefined,
                                      disableCache);
     }
 
@@ -532,26 +624,26 @@ export class NsApi {
      * @param council The council of the World Assembly to request data for.
      * @param shards An array of World Assembly API shards. No shards will be
      *               specified if left undefined.
-     * @param extraParams Additional shard-specific parameters.
+     * @param shardParams Additional shard-specific parameters.
      * @param disableCache If the request cache is enabled, disable it for
      *                     this request.
      *
      * @return A promise providing data from the API.
      */
-    public async worldAssemblyRequest(council: WorldAssemblyCouncil,
-                                      shards: string[] = [],
-                                      extraParams: { [name: string]: string } = {},
-                                      disableCache: boolean = false): Promise<any>
+    public async worldAssemblyRequest(
+        council: WorldAssemblyCouncil,
+        shards: string[] = [],
+        shardParams: { [paramName: string]: string } = {},
+        disableCache: boolean = false): Promise<any>
     {
-        extraParams["wa"] = String(council);
-        return await this.xmlRequest(shards, extraParams, undefined,
-                                     disableCache);
+        const globalParams = {"wa": String(council)};
+        return await this.xmlRequest(shards, shardParams, globalParams,
+                                     undefined, disableCache);
     }
 
     /**
-     * Sends a telegram using the NationStates telegram API.
-     *
-     * Note that telegram requests are never cached.
+     * Sends a telegram using the NationStates telegram API. Even if request
+     * caching is enabled, these requests are never cached.
      *
      * @param clientKey The client key.
      * @param tgId The ID of the telegram API template.
@@ -690,27 +782,39 @@ export class NsApi {
      * Requests XML data from the NationStates API.
      *
      * @param shards Shards to add to the NationStates API path.
-     * @param params Additional parameters to add to the NationStates API
-     *               path.
+     * @param shardParams Additional shard-specific parameters.
+     * @param globalParams Additional URI-level parameters.
      * @param auth Authentication information for private shards.
      * @param disableCache If the request cache is enabled, disable it for
      *                     this request.
      *
      * @return A promise returning the data from the NationStates API.
      */
-    private async xmlRequest(shards: string[],
-                             params: { [name: string]: string },
-                             auth: PrivateShardsAuth | undefined,
-                             disableCache: boolean): Promise<any>
+    private async xmlRequest(
+        shards: string[],
+        shardParams: { [paramName: string]: string },
+        globalParams: { [paramName: string]: string },
+        auth: Auth | undefined,
+        disableCache: boolean): Promise<any>
     {
         let allParams = "";
-        allParams += "q=" + shards.sort()
-                                  .map(item => encodeURIComponent(item))
-                                  .join("+") + "&";
-        const paramKeys = Object.keys(params).sort();
-        for (const param of paramKeys) {
-            allParams += encodeURIComponent(param) + "="
-                         + encodeURIComponent(params[param]) + "&";
+        if (shards.length !== 0) {
+            allParams += "q=";
+            allParams += shards.sort()
+                               .map(item => encodeURIComponent(item))
+                               .join("+");
+            for (const paramName in shardParams) {
+                allParams += ";" + encodeURIComponent(paramName)
+                             + "=" + encodeURIComponent(shardParams[paramName]);
+            }
+            allParams += "&";
+        }
+
+        const globalParamNames = Object.keys(globalParams).sort();
+        for (const paramName of globalParamNames) {
+            allParams += encodeURIComponent(paramName) + "="
+                         + encodeURIComponent(globalParams[paramName])
+                         + "&";
         }
         allParams += "v=" + API_VERSION;
 
@@ -778,9 +882,10 @@ export class NsApi {
      *
      * @return A promise returning the data from the NationStates API.
      */
-    private apiRequest(path: string,
-                       tg: TelegramType | undefined,
-                       auth: PrivateShardsAuth | undefined): Promise<HttpResponse>
+    private apiRequest(
+        path: string,
+        tg: TelegramType | undefined,
+        auth: Auth | undefined): Promise<HttpResponse>
     {
         return new Promise((resolve, reject) => {
             if (this.blockNewRequests) {

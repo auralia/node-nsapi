@@ -1,6 +1,6 @@
 {
   "name": "nsapi",
-  "version": "0.1.15",
+  "version": "0.2.0",
   "description": "Provides access to the NationStates API",
   "keywords": [
     "NationStates",
@@ -25,21 +25,25 @@
     "type": "git",
     "url": "git://github.com/auralia/node-nsapi.git"
   },
+  "scripts": {
+    "build": "npm run-script prod && npm run-script docs",
+    "build-dev": "npm run-script dev && npm run-script docs",
+    "clean": "rimraf lib",
+    "clean-docs": "rimraf docs",
+    "dev": "npm run-script clean && tsc -p tsconfig.json --sourceMap",
+    "docs": "npm run-script clean-docs && typedoc --mode file --module commonjs --out docs --target es5 --tsconfig tsconfig.json",
+    "prod": "npm run-script clean && tsc -p tsconfig.json"
+  },
   "devDependencies": {
-    "del": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^2.6.2",
-    "gulp-typedoc": "^2.1.1",
-    "gulp-typescript": "^3.2.3",
-    "merge2": "^1.2.0",
-    "typedoc": "^0.9.0",
-    "typescript": "^2.6.2"
+    "rimraf": "^3.0.2",
+    "typedoc": "^0.17.4",
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "@types/clone": "^0.1.30",
-    "@types/node": "^8.5.2",
-    "@types/xml2js": "0.4.2",
-    "clone": "^2.1.1",
-    "xml2js": "^0.4.19"
+    "@types/node": "^13.11.1",
+    "@types/xml2js": "0.4.5",
+    "clone": "^2.1.2",
+    "xml2js": "^0.4.23"
   }
 }

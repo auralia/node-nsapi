@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>NsApi | nsapi</title>
-	<meta name="description" content="">
+	<meta name="description" content="Documentation for nsapi">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
@@ -13,7 +13,7 @@
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -138,6 +138,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="nsapi.html#clearcache" class="tsd-kind-icon">clear<wbr>Cache</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="nsapi.html#clearqueue" class="tsd-kind-icon">clear<wbr>Queue</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="nsapi.html#initinterval" class="tsd-kind-icon">init<wbr>Interval</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="nsapi.html#nationcommandrequest" class="tsd-kind-icon">nation<wbr>Command<wbr>Request</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="nsapi.html#nationrequest" class="tsd-kind-icon">nation<wbr>Request</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="nsapi.html#parsexml" class="tsd-kind-icon">parse<wbr>Xml</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="nsapi.html#regionrequest" class="tsd-kind-icon">region<wbr>Request</a></li>
@@ -157,13 +158,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>NsApi<span class="tsd-signature-symbol">(</span>userAgent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, delay<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, apiDelayMillis<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, nonRecruitTgDelayMillis<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, recruitTgDelayMillis<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, cacheApiRequests<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, cacheTime<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, allowImmediateApiRequests<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, allowImmediateTgRequests<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="nsapi.html" class="tsd-signature-type">NsApi</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>NsApi<span class="tsd-signature-symbol">(</span>userAgent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">: </span><a href="../interfaces/nsapioptions.html" class="tsd-signature-type">NsApiOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="nsapi.html" class="tsd-signature-type">NsApi</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:196</li>
+									<li>Defined in src/api.ts:254</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -183,76 +184,10 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> delay: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></h5>
+									<h5>options: <a href="../interfaces/nsapioptions.html" class="tsd-signature-type">NsApiOptions</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>Whether a delay is introduced before API and telegram
-											requests. Defaults to true.</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> apiDelayMillis: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;600</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The delay before API requests in milliseconds.
-											Defaults to 600.</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> nonRecruitTgDelayMillis: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;60000</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The delay before non-recruitment
-												telegram requests in milliseconds.
-											Defaults to 60000.</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> recruitTgDelayMillis: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;180000</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The delay before recruitment telegram
-												requests in milliseconds. Defaults to
-											180000.</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> cacheApiRequests: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Whether API requests should be cached.
-											Defaults to true.</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> cacheTime: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;900</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The number of seconds that API requests should stay
-											cached. Defaults to 900.</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> allowImmediateApiRequests: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Allows API requests immediately after
-											the API is initialized.</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> allowImmediateTgRequests: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Allows telegram requests immediately
-											after the API is initialized.</p>
+											<p>Other options.</p>
 										</div>
 									</div>
 								</li>
@@ -267,47 +202,47 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_apidelaymillis" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _api<wbr>Delay<wbr>Millis</h3>
-					<div class="tsd-signature tsd-kind-icon">_api<wbr>Delay<wbr>Millis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">_api<wbr>Delay<wbr>Millis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 600</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:171</li>
+							<li>Defined in src/api.ts:229</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_blockexistingrequests" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _block<wbr>Existing<wbr>Requests</h3>
-					<div class="tsd-signature tsd-kind-icon">_block<wbr>Existing<wbr>Requests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<div class="tsd-signature tsd-kind-icon">_block<wbr>Existing<wbr>Requests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:194</li>
+							<li>Defined in src/api.ts:252</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_blocknewrequests" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _block<wbr>New<wbr>Requests</h3>
-					<div class="tsd-signature tsd-kind-icon">_block<wbr>New<wbr>Requests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<div class="tsd-signature tsd-kind-icon">_block<wbr>New<wbr>Requests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:195</li>
+							<li>Defined in src/api.ts:253</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_cache" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _cache</h3>
-					<div class="tsd-signature tsd-kind-icon">_cache<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<div class="tsd-signature tsd-kind-icon">_cache<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:186</li>
+							<li>Defined in src/api.ts:244</li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter-index-signature">
-								<h5><span class="tsd-signature-symbol">[</span>url: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">object</span></h5>
+								<h5><span class="tsd-signature-symbol">[</span>url: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-symbol">{ </span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>time<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h5>
 								<ul class="tsd-parameters">
 									<li class="tsd-parameter">
 										<h5>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5>
@@ -323,40 +258,40 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_cacheapirequests" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _cache<wbr>Api<wbr>Requests</h3>
-					<div class="tsd-signature tsd-kind-icon">_cache<wbr>Api<wbr>Requests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<div class="tsd-signature tsd-kind-icon">_cache<wbr>Api<wbr>Requests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:185</li>
+							<li>Defined in src/api.ts:243</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_cachetime" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _cache<wbr>Time</h3>
-					<div class="tsd-signature tsd-kind-icon">_cache<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">_cache<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 900</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:192</li>
+							<li>Defined in src/api.ts:250</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_cleanup" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _cleanup</h3>
-					<div class="tsd-signature tsd-kind-icon">_cleanup<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<div class="tsd-signature tsd-kind-icon">_cleanup<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:196</li>
+							<li>Defined in src/api.ts:254</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_delay" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _delay</h3>
-					<div class="tsd-signature tsd-kind-icon">_delay<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<div class="tsd-signature tsd-kind-icon">_delay<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:170</li>
+							<li>Defined in src/api.ts:228</li>
 						</ul>
 					</aside>
 				</section>
@@ -366,7 +301,7 @@
 					<div class="tsd-signature tsd-kind-icon">_interval<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:180</li>
+							<li>Defined in src/api.ts:238</li>
 						</ul>
 					</aside>
 				</section>
@@ -376,7 +311,7 @@
 					<div class="tsd-signature tsd-kind-icon">_last<wbr>Request<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:181</li>
+							<li>Defined in src/api.ts:239</li>
 						</ul>
 					</aside>
 				</section>
@@ -386,57 +321,57 @@
 					<div class="tsd-signature tsd-kind-icon">_last<wbr>TgTime<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:182</li>
+							<li>Defined in src/api.ts:240</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_nonrecruittgdelaymillis" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _non<wbr>Recruit<wbr>TgDelay<wbr>Millis</h3>
-					<div class="tsd-signature tsd-kind-icon">_non<wbr>Recruit<wbr>TgDelay<wbr>Millis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">_non<wbr>Recruit<wbr>TgDelay<wbr>Millis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 180000</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:173</li>
+							<li>Defined in src/api.ts:231</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_queue" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _queue</h3>
-					<div class="tsd-signature tsd-kind-icon">_queue<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span></div>
+					<div class="tsd-signature tsd-kind-icon">_queue<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>func<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">; </span>reject<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>err<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">; </span>tg<span class="tsd-signature-symbol">: </span><a href="../enums/telegramtype.html" class="tsd-signature-type">TelegramType</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:175</li>
+							<li>Defined in src/api.ts:233</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_recruittgdelaymillis" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _recruit<wbr>TgDelay<wbr>Millis</h3>
-					<div class="tsd-signature tsd-kind-icon">_recruit<wbr>TgDelay<wbr>Millis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">_recruit<wbr>TgDelay<wbr>Millis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 60000</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:172</li>
+							<li>Defined in src/api.ts:230</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_requestinprogress" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _request<wbr>InProgress</h3>
-					<div class="tsd-signature tsd-kind-icon">_request<wbr>InProgress<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<div class="tsd-signature tsd-kind-icon">_request<wbr>InProgress<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:183</li>
+							<li>Defined in src/api.ts:241</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_useragent" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _user<wbr>Agent</h3>
-					<div class="tsd-signature tsd-kind-icon">_user<wbr>Agent<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">_user<wbr>Agent<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in api.ts:169</li>
+							<li>Defined in src/api.ts:227</li>
 						</ul>
 					</aside>
 				</section>
@@ -454,7 +389,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:303</li>
+									<li>Defined in src/api.ts:341</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -467,7 +402,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:311</li>
+									<li>Defined in src/api.ts:349</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -497,7 +432,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:362</li>
+									<li>Defined in src/api.ts:400</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -510,7 +445,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:369</li>
+									<li>Defined in src/api.ts:407</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -539,7 +474,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:376</li>
+									<li>Defined in src/api.ts:414</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -552,7 +487,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:383</li>
+									<li>Defined in src/api.ts:421</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -581,7 +516,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:414</li>
+									<li>Defined in src/api.ts:452</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -594,7 +529,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:421</li>
+									<li>Defined in src/api.ts:459</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -623,7 +558,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:428</li>
+									<li>Defined in src/api.ts:466</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -636,7 +571,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:435</li>
+									<li>Defined in src/api.ts:473</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -665,7 +600,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:285</li>
+									<li>Defined in src/api.ts:323</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -679,7 +614,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:295</li>
+									<li>Defined in src/api.ts:333</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -710,7 +645,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:322</li>
+									<li>Defined in src/api.ts:360</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -723,7 +658,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:330</li>
+									<li>Defined in src/api.ts:368</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -753,7 +688,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:343</li>
+									<li>Defined in src/api.ts:381</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -767,7 +702,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:350</li>
+									<li>Defined in src/api.ts:388</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -795,7 +730,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:390</li>
+									<li>Defined in src/api.ts:428</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -817,7 +752,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:397</li>
+									<li>Defined in src/api.ts:435</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -840,7 +775,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:265</li>
+									<li>Defined in src/api.ts:303</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -853,7 +788,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:273</li>
+									<li>Defined in src/api.ts:311</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -885,7 +820,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:764</li>
+									<li>Defined in src/api.ts:868</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -907,13 +842,13 @@
 					<a name="apirequest" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> api<wbr>Request</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">api<wbr>Request<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, tg<span class="tsd-signature-symbol">: </span><a href="../enums/telegramtype.html" class="tsd-signature-type">TelegramType</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span>, auth<span class="tsd-signature-symbol">: </span><a href="../interfaces/privateshardsauth.html" class="tsd-signature-type">PrivateShardsAuth</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HttpResponse</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">api<wbr>Request<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, tg<span class="tsd-signature-symbol">: </span><a href="../enums/telegramtype.html" class="tsd-signature-type">TelegramType</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span>, auth<span class="tsd-signature-symbol">: </span><a href="../interfaces/auth.html" class="tsd-signature-type">Auth</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HttpResponse</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:781</li>
+									<li>Defined in src/api.ts:885</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -937,7 +872,7 @@
 									</div>
 								</li>
 								<li>
-									<h5>auth: <a href="../interfaces/privateshardsauth.html" class="tsd-signature-type">PrivateShardsAuth</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
+									<h5>auth: <a href="../interfaces/auth.html" class="tsd-signature-type">Auth</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Authentication information for private shards.</p>
 									</div>
@@ -952,13 +887,13 @@
 					<a name="authenticaterequest" class="tsd-anchor"></a>
 					<h3>authenticate<wbr>Request</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">authenticate<wbr>Request<span class="tsd-signature-symbol">(</span>nation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, checksum<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, token<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">authenticate<wbr>Request<span class="tsd-signature-symbol">(</span>nation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, checksum<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, token<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:604</li>
+									<li>Defined in src/api.ts:696</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -983,7 +918,7 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> token: <span class="tsd-signature-type">string</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> token: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Site-specific token. No token will be specified if this
 										value is left undefined.</p>
@@ -1006,7 +941,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:460</li>
+									<li>Defined in src/api.ts:498</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1030,7 +965,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:446</li>
+									<li>Defined in src/api.ts:484</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1052,7 +987,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:404</li>
+									<li>Defined in src/api.ts:442</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1074,7 +1009,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:638</li>
+									<li>Defined in src/api.ts:730</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1087,16 +1022,78 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="nationrequest" class="tsd-anchor"></a>
-					<h3>nation<wbr>Request</h3>
+					<a name="nationcommandrequest" class="tsd-anchor"></a>
+					<h3>nation<wbr>Command<wbr>Request</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">nation<wbr>Request<span class="tsd-signature-symbol">(</span>nation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, shards<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, extraParams<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, auth<span class="tsd-signature-symbol">?: </span><a href="../interfaces/privateshardsauth.html" class="tsd-signature-type">PrivateShardsAuth</a>, disableCache<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">nation<wbr>Command<wbr>Request<span class="tsd-signature-symbol">(</span>auth<span class="tsd-signature-symbol">: </span><a href="../interfaces/auth.html" class="tsd-signature-type">Auth</a>, nation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, commandParams<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, requiresPrepare<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:479</li>
+									<li>Defined in src/api.ts:541</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Executes a NationStates nation command. Even if request caching is
+									enabled, these requests are never cached.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>auth: <a href="../interfaces/auth.html" class="tsd-signature-type">Auth</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Authentication information for private shards.</p>
+									</div>
+								</li>
+								<li>
+									<h5>nation: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The name of the nation to execute a command for.</p>
+									</div>
+								</li>
+								<li>
+									<h5>command: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The command to execute.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> commandParams: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Additional command-specific parameters.</p>
+									</div>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-index-signature">
+											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> requiresPrepare: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Whether this command requires a prepare.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>A promise providing data from the API.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="nationrequest" class="tsd-anchor"></a>
+					<h3>nation<wbr>Request</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">nation<wbr>Request<span class="tsd-signature-symbol">(</span>nation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, shards<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, shardParams<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, auth<span class="tsd-signature-symbol">?: </span><a href="../interfaces/auth.html" class="tsd-signature-type">Auth</a>, disableCache<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in src/api.ts:517</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1113,31 +1110,31 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shards: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shards: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>An array of nation API shards. No shards will be specified
 										if left undefined.</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> extraParams: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shardParams: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Additional shard-specific parameters.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
-											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
+											<h5><span class="tsd-signature-symbol">[</span>paramName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
 										</li>
 									</ul>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> auth: <a href="../interfaces/privateshardsauth.html" class="tsd-signature-type">PrivateShardsAuth</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> auth: <a href="../interfaces/auth.html" class="tsd-signature-type">Auth</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Authentication information for private shards.</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> disableCache: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> disableCache: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>If the request cache is enabled, disable it for
 										this request.</p>
@@ -1159,7 +1156,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:750</li>
+									<li>Defined in src/api.ts:854</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1185,13 +1182,13 @@
 					<a name="regionrequest" class="tsd-anchor"></a>
 					<h3>region<wbr>Request</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">region<wbr>Request<span class="tsd-signature-symbol">(</span>region<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, shards<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, extraParams<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, disableCache<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">region<wbr>Request<span class="tsd-signature-symbol">(</span>region<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, shards<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, shardParams<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, disableCache<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:500</li>
+									<li>Defined in src/api.ts:587</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1208,25 +1205,25 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shards: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shards: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>An array of region API shards. No shards will be specified
 										if left undefined.</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> extraParams: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shardParams: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Additional shard-specific parameters.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
-											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
+											<h5><span class="tsd-signature-symbol">[</span>paramName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
 										</li>
 									</ul>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> disableCache: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> disableCache: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>If the request cache is enabled, disable it for
 										this request.</p>
@@ -1248,14 +1245,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:564</li>
+									<li>Defined in src/api.ts:656</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sends a telegram using the NationStates telegram API.</p>
+									<p>Sends a telegram using the NationStates telegram API. Even if request
+									caching is enabled, these requests are never cached.</p>
 								</div>
-								<p>Note that telegram requests are never cached.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -1299,13 +1296,13 @@
 					<a name="worldassemblyrequest" class="tsd-anchor"></a>
 					<h3>world<wbr>Assembly<wbr>Request</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">world<wbr>Assembly<wbr>Request<span class="tsd-signature-symbol">(</span>council<span class="tsd-signature-symbol">: </span><a href="../enums/worldassemblycouncil.html" class="tsd-signature-type">WorldAssemblyCouncil</a>, shards<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, extraParams<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, disableCache<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">world<wbr>Assembly<wbr>Request<span class="tsd-signature-symbol">(</span>council<span class="tsd-signature-symbol">: </span><a href="../enums/worldassemblycouncil.html" class="tsd-signature-type">WorldAssemblyCouncil</a>, shards<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, shardParams<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, disableCache<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:541</li>
+									<li>Defined in src/api.ts:633</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1322,25 +1319,25 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shards: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shards: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>An array of World Assembly API shards. No shards will be
 										specified if left undefined.</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> extraParams: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shardParams: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Additional shard-specific parameters.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
-											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
+											<h5><span class="tsd-signature-symbol">[</span>paramName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
 										</li>
 									</ul>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> disableCache: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> disableCache: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>If the request cache is enabled, disable it for
 										this request.</p>
@@ -1356,42 +1353,44 @@
 					<a name="worldrequest" class="tsd-anchor"></a>
 					<h3>world<wbr>Request</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">world<wbr>Request<span class="tsd-signature-symbol">(</span>shards<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, extraParams<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, disableCache<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">world<wbr>Request<span class="tsd-signature-symbol">(</span>shards<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, shardParams<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, disableCache<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:521</li>
+									<li>Defined in src/api.ts:612</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Requests data from the NationStates world API.</p>
 								</div>
+								<p>This API can also be used to request information from the trading cards
+								API if the &quot;card&quot; or &quot;cards&quot; shard is supplied.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shards: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shards: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>An array of world API shards. No shards will be specified
-										if left undefined.</p>
+										<p>An array of world or trading card API shards. No shards
+										will be specified if left undefined.</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> extraParams: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> shardParams: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Additional shard-specific parameters.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
-											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
+											<h5><span class="tsd-signature-symbol">[</span>paramName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
 										</li>
 									</ul>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> disableCache: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> disableCache: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>If the request cache is enabled, disable it for
 										this request.</p>
@@ -1407,13 +1406,13 @@
 					<a name="xmlrequest" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> xml<wbr>Request</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">xml<wbr>Request<span class="tsd-signature-symbol">(</span>shards<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, params<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, auth<span class="tsd-signature-symbol">: </span><a href="../interfaces/privateshardsauth.html" class="tsd-signature-type">PrivateShardsAuth</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span>, disableCache<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">xml<wbr>Request<span class="tsd-signature-symbol">(</span>shards<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, shardParams<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span>, globalParams<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span>, auth<span class="tsd-signature-symbol">: </span><a href="../interfaces/auth.html" class="tsd-signature-type">Auth</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span>, disableCache<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:701</li>
+									<li>Defined in src/api.ts:793</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1430,19 +1429,29 @@
 									</div>
 								</li>
 								<li>
-									<h5>params: <span class="tsd-signature-type">object</span></h5>
+									<h5>shardParams: <span class="tsd-signature-symbol">{}</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Additional parameters to add to the NationStates API
-										path.</p>
+										<p>Additional shard-specific parameters.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
-											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
+											<h5><span class="tsd-signature-symbol">[</span>paramName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
 										</li>
 									</ul>
 								</li>
 								<li>
-									<h5>auth: <a href="../interfaces/privateshardsauth.html" class="tsd-signature-type">PrivateShardsAuth</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
+									<h5>globalParams: <span class="tsd-signature-symbol">{}</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Additional URI-level parameters.</p>
+									</div>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-index-signature">
+											<h5><span class="tsd-signature-symbol">[</span>paramName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<h5>auth: <a href="../interfaces/auth.html" class="tsd-signature-type">Auth</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Authentication information for private shards.</p>
 									</div>
@@ -1470,7 +1479,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in api.ts:879</li>
+									<li>Defined in src/api.ts:984</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1625,6 +1634,9 @@
 								<a href="nsapi.html#initinterval" class="tsd-kind-icon">init<wbr>Interval</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="nsapi.html#nationcommandrequest" class="tsd-kind-icon">nation<wbr>Command<wbr>Request</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="nsapi.html#nationrequest" class="tsd-kind-icon">nation<wbr>Request</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -1653,7 +1665,10 @@
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/privateshardsauth.html" class="tsd-kind-icon">Private<wbr>Shards<wbr>Auth</a>
+						<a href="../interfaces/auth.html" class="tsd-kind-icon">Auth</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/nsapioptions.html" class="tsd-kind-icon">Ns<wbr>Api<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="../globals.html#api_version" class="tsd-kind-icon">API_<wbr>VERSION</a>
@@ -1671,62 +1686,29 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
