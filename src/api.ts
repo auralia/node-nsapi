@@ -982,8 +982,7 @@ export class NsApi {
      * @return The converted name.
      */
     private static toId(name: string) {
-        return name.replace("_", " ")
-                   .trim()
+        return name.trim()
                    .toLowerCase()
                    .replace(" ", "_");
     }
